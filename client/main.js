@@ -54,6 +54,12 @@ var host = flyingon.view({
                         fontSize: '14px',
                         color: 'white',
                         cursor: 'pointer'
+                    },
+                    {
+                        Class: 'File',
+                        id: 'import',
+                        text: 'import',
+                        accept: '.csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     }
                 ]
             },
@@ -99,6 +105,15 @@ var host = flyingon.view({
         var pwdSet = this.findById('modifypwd')[0];
 
         var changeuser = this.findById('changeuser')[0];
+
+
+        this.findById('import').on('change', function (event) {
+
+            flyingon.importXlsx(event.dom.files[0], function (data) {
+               
+                debugger
+            });
+        });
 
 
         if (user) {

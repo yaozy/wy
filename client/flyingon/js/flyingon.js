@@ -10180,9 +10180,6 @@ flyingon.Query = Object.extend(function () {
     //margin border padding css样式缓存
     var sides_cache = flyingon.create(null);
 
-    //css名称映射
-    var css_map = flyingon.css_map(true);
-
     //style名称映射
     var style_map = flyingon.css_map();
 
@@ -11427,6 +11424,34 @@ flyingon.renderer('LinkButton', function (base) {
         view.href = value;
     };
 
+
+
+});
+
+
+
+
+flyingon.renderer('File', 'Button', function (base) {
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<button type="button"');
+        
+        render.call(this, writer, control);
+        
+        writer.push('><span class="f-button-icon" style="display:none;width:16px;height:16px;"></span>',
+                '<br style="display:none;"/>',
+                '<span class="f-button-text"></span>',
+                '<input type="file" style="position:absolute;left:0;top:0;width:100%;height:100%;opacity:0;"/>',
+            '</button>');
+    }
+
+
+    this.accept = function (control, view, value) {
+
+        view.lastChild.setAttribute('accept', value);
+    }
 
 
 });
@@ -19167,6 +19192,23 @@ flyingon.Control.extend('LinkButton', function (base) {
 
 
 }).register();
+
+
+
+
+flyingon.Button.extend('File', function (base) {
+   
+    
+
+    this.defineProperty('accept', '', {
+
+        set: this.render    
+    });
+       
+
+
+}).register('File');
+
 
 
 
@@ -30146,6 +30188,25 @@ flyingon.view.Template = Object.extend(function () {
     on(document, 'touchend', touch_event);
 
     on(document, 'touchcancel', touch_event);
+
+
+    on(document, 'change', function (e) {
+     
+        var control = flyingon.findControl(e.target);
+
+        if (control)
+        {
+            var event = new flyingon.Event(e.type);
+
+            event.dom = e.target;
+            control.trigger(event);
+
+            if (event.dom.type === 'file')
+            {
+                event.dom.value = '';
+            }
+        }
+    });
 
 
     on(document, 'contextmenu', function (e) {

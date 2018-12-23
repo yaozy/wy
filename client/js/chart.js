@@ -1,37 +1,3 @@
-flyingon.downloadDataURL = function (name, dataURL) {
-
-    var a = document.createElement('a');
-
-    // Chrome and Firefox
-    if (a.download != null)
-    {
-        a.download = name;
-        a.target = '_blank';
-        a.href = dataURL;
-
-        a.dispatchEvent(new MouseEvent('click', {
-            view: window,
-            bubbles: true,
-            cancelable: false
-        }));
-    }
-    else if (navigator.msSaveOrOpenBlob) // IE
-    {
-        var text = atob(dataURL.split(',')[1]),
-            length = text.length,
-            array = new Uint8Array(length);
-
-        while(length--)
-        {
-            array[length] = text.charCodeAt(length);
-        }
-
-        navigator.msSaveOrOpenBlob(new Blob([array]), name);
-    }
-}
-
-
-
 flyingon.Chart = flyingon.Control.extend(function (Class, base) {
 
 
@@ -340,18 +306,22 @@ flyingon.Chart = flyingon.Control.extend(function (Class, base) {
 
 
 
-    this.saveAsImage = function (name) {
+    this.toDataURL = function () {
 
         var model = this.chart.getModel();
 
-        var dataURL = this.chart.getConnectedDataURL({
+        return this.chart.getConnectedDataURL({
             type: 'png',
             backgroundColor: model.get('backgroundColor', true) || '#fff',
             excludeComponents: model.get('excludeComponents'),
             pixelRatio: model.get('pixelRatio')
         });
+    }
 
-        flyingon.downloadDataURL(name + '.png', dataURL);
+
+    this.saveAsImage = function (name) {
+
+        flyingon.downloadDataURL(name + '.png', this.toDataURL());
     }
 
 
@@ -546,7 +516,7 @@ flyingon.ChartPlugin = flyingon.widget({
                     break;
 
                 case 'export':
-                    chart.saveAsImage(chart.chartName);
+                    exportTo(chart);
                     break;
 
                 case 'sort':
@@ -1634,7 +1604,199 @@ flyingon.ChartPlugin = flyingon.widget({
         }
 
 
+        function exportTo(chart) {
+
+            var grid;
+            
+            if (host[0] && host[0].findByType && (grid = host[0].findByType('Grid')))
+            {
+                var columns = grid.columns().slice(0),
+                    dataset = grid.dataset(),
+                    data = [];
+
+                for (var i = columns.length; i--;)
+                {
+                    columns[i] = columns[i].title();
+                }
+
+                for (var i = dataset.length; i--;)
+                {
+                    data[i] = dataset[i].data;
+                }
+
+                flyingon.exportToXlsx(chart.chartName, 
+                    '<img src="' + chart.toDataURL() + '" /><br></br>' +
+                    flyingon.arrayToHtml(columns, data));
+            }
+            else
+            {
+                chart.saveAsImage(chart.chartName);
+            }
+        }
+
     }
 
 
 });
+
+
+
+
+flyingon.downloadDataURL = function (name, dataURL) {
+
+    var a = document.createElement('a');
+
+    // Chrome and Firefox
+    if (a.download != null)
+    {
+        a.download = name;
+        a.target = '_blank';
+        a.href = dataURL;
+
+        a.dispatchEvent(new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: false
+        }));
+    }
+    else if (navigator.msSaveOrOpenBlob) // IE
+    {
+        var text = atob(dataURL.split(',')[1]),
+            length = text.length,
+            array = new Uint8Array(length);
+
+        while(length--)
+        {
+            array[length] = text.charCodeAt(length);
+        }
+
+        navigator.msSaveOrOpenBlob(new Blob([array]), name);
+    }
+}
+
+
+flyingon.downloadBlob = function (name, blob) {
+
+    var a = document.createElement('a');
+
+    // Chrome and Firefox
+    if (a.download != null)
+    {
+        a.download = name;
+        a.target = '_blank';
+        a.href = URL.createObjectURL(blob);
+
+        a.dispatchEvent(new MouseEvent('click', {
+            view: window,
+            bubbles: true,
+            cancelable: false
+        }));
+    }
+    else if (navigator.msSaveOrOpenBlob) // IE
+    {
+        navigator.msSaveOrOpenBlob(blob, name);
+    }
+}
+
+
+
+flyingon.importXlsx = function (file, callback) {
+
+    flyingon.script('js/xlsx.full.min.js', function () {
+
+        var reader = new FileReader();
+
+        reader.onload = function(event) {
+            
+            callback(XLSX.read(event.target.result, {
+                type: 'binary'
+            }));
+        };
+
+        reader.readAsBinaryString(file);
+    });
+}
+
+
+
+flyingon.arrayToHtml = function (columns, data, caption) {
+
+    var list = ['<table border="1">'];
+
+    if (caption)
+    {
+        list.push('<caption>', caption.replace(/</g, '&lt;').replace(/>/g, '&gt;'), '</caption>');
+    }
+
+    list.push('<tr>');
+
+    for (var j = 0, l2 = columns.length; j < l2; j++)
+    {
+        var value = columns[j];
+
+        if (typeof value === 'string')
+        {
+            value = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+
+        list.push('<th>', value, '</th>');
+    }
+
+    list.push('</tr>');
+
+    if (data)
+    {
+        for (var i = 0, l1 = data.length; i < l1; i++)
+        {
+            var row = data[i];
+            
+            list.push('<tr>');
+
+            for (var j = 0, l2 = row.length; j < l2; j++)
+            {
+                var value = row[j];
+
+                if (typeof value === 'string')
+                {
+                    value = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                }
+
+                list.push('<th>', value, '</th>');
+            }
+
+            list.push('</tr>');
+        }
+    }
+
+    return list.join('');
+}
+
+
+flyingon.exportToXlsx = function (name, html) {
+
+    flyingon.downloadBlob(name + '.xlsx', new Blob([
+        ['<html  xmlns:x ="urn:schemas-microsoft-com:office:excel">',
+            '<head>',
+                '<!-- [if gte mso 9]>',
+                    '<xml>',
+                        '<x:ExcelWorkbook>',
+                        '<x:ExcelWorksheets>',
+                        '<x:ExcelWorksheet>',
+                        '<x:WorksheetOptions>',
+                        '<x:Print>',
+                        '<x:ValidPrinterInfo />',
+                        '</x:Print>',
+                        '</x:WorksheetOptions>',
+                        '</x:ExcelWorksheet>',
+                        '</x:ExcelWorksheets>',
+                        '</x:ExcelWorkbook>',
+                    '</xml>',
+                '<![endif] -->',
+            '</head>',
+            '<body>',
+                html,
+            '</body>',
+            '</html>'
+        ].join('')
+    ], { type: 'application/vnd.ms-excel' }));
+}
