@@ -1,0 +1,19 @@
+{
+  "name": "wy",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/index.js",
+  "dependencies": {
+    "flyingon-server": "^1.0.19"
+  },
+  "devDependencies": {
+    "chai": "^4.1.2",
+    "mocha": "^5.2.0"
+  },
+  "scripts": {
+    "server": "node src/index.js",
+    "test": "mocha test/index.js"
+  },
+  "author": "",
+  "license": "ISC"
+}
