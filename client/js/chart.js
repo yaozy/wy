@@ -1718,85 +1718,14 @@ flyingon.importXlsx = function (file, callback) {
 }
 
 
+flyingon.exportToXlsx = function (name, data) {
+    
+    flyingon.script('js/xlsx.full.min.js', function () {
 
-flyingon.arrayToHtml = function (columns, data, caption) {
-
-    var list = ['<table border="1">'];
-
-    if (caption)
-    {
-        list.push('<caption>', caption.replace(/</g, '&lt;').replace(/>/g, '&gt;'), '</caption>');
-    }
-
-    list.push('<tr>');
-
-    for (var j = 0, l2 = columns.length; j < l2; j++)
-    {
-        var value = columns[j];
-
-        if (typeof value === 'string')
-        {
-            value = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-        }
-
-        list.push('<th>', value, '</th>');
-    }
-
-    list.push('</tr>');
-
-    if (data)
-    {
-        for (var i = 0, l1 = data.length; i < l1; i++)
-        {
-            var row = data[i];
-            
-            list.push('<tr>');
-
-            for (var j = 0, l2 = row.length; j < l2; j++)
-            {
-                var value = row[j];
-
-                if (typeof value === 'string')
-                {
-                    value = value.replace(/</g, '&lt;').replace(/>/g, '&gt;');
-                }
-
-                list.push('<th>', value, '</th>');
-            }
-
-            list.push('</tr>');
-        }
-    }
-
-    return list.join('');
-}
-
-
-flyingon.exportToXlsx = function (name, html) {
-
-    flyingon.downloadBlob(name + '.xlsx', new Blob([
-        ['<html  xmlns:x ="urn:schemas-microsoft-com:office:excel">',
-            '<head>',
-                '<!-- [if gte mso 9]>',
-                    '<xml>',
-                        '<x:ExcelWorkbook>',
-                        '<x:ExcelWorksheets>',
-                        '<x:ExcelWorksheet>',
-                        '<x:WorksheetOptions>',
-                        '<x:Print>',
-                        '<x:ValidPrinterInfo />',
-                        '</x:Print>',
-                        '</x:WorksheetOptions>',
-                        '</x:ExcelWorksheet>',
-                        '</x:ExcelWorksheets>',
-                        '</x:ExcelWorkbook>',
-                    '</xml>',
-                '<![endif] -->',
-            '</head>',
-            '<body>',
-                html,
-            '</body>',
-            '</html>'
-        ].join('')
-    ], { type: 'application/vnd.ms-excel' }));
+        var wb = XLSX.utils.book_new(),
+            ws = XLSX.utils.json_to_sheet(data);
+        
+        XLSX.utils.book_append_sheet(wb, ws);
+        XLSX.writeFile(wb, name + '.xlsx');
+    });
 }
