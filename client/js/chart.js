@@ -331,20 +331,272 @@ flyingon.Chart = flyingon.Control.extend(function (Class, base) {
 
 
 
+flyingon.Control.extend('HomeBox', function (Class, base) {
+
+
+    this.defaultWidth = 150;
+
+    this.defaultHeight = 60;
+
+
+    this.defineProperty('icon', '', {
+    
+        set: this.render
+    });
+
+
+    this.defineProperty('text', '', {
+    
+        set: this.render
+    });
+
+
+    this.defineProperty('value', '', {
+    
+        set: this.render
+    });
+
+
+}).register();
+
+
+
+flyingon.renderer('HomeBox', function (base) {
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<div');
+        
+        render.call(this, writer, control);
+        
+        writer.push('>',
+                '<div class="f-homebox-host">',
+                    '<div class="f-homebox-icon"></div>',
+                    '<div>',
+                        '<div class="f-homebox-text"></div>',
+                        '<div class="f-homebox-value"></div>',
+                    '</div>',
+                '</div>',
+                '<span class="f-homebox-corner1"></span>',
+                '<span class="f-homebox-corner2"></span>',
+                '<span class="f-homebox-corner3"></span>',
+                '<span class="f-homebox-corner4"></span>',
+            '</div>');
+    };
+
+
+    this.icon = function (control, dom, value) {
+
+        dom = dom.firstChild.firstChild;
+        dom.className = 'f-homebox-icon ' + value;
+        dom.nextSibling.style.left = value ? '30px' : 0;
+    }
+
+
+    this.text = function (control, dom, value) {
+
+        dom.firstChild.lastChild.firstChild[this.__text_name] = value;
+    }
+
+
+    this.value = function (control, dom, value) {
+
+        dom.firstChild.lastChild.lastChild[this.__text_name] = value;
+    }
+
+
+});
+
+
+
+flyingon.Control.extend('HomeTime', function (Class, base) {
+
+
+}).register();
+
+
+
+flyingon.renderer('HomeTime', function (base) {
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<div');
+        
+        render.call(this, writer, control);
+
+        writer.push('></div>');
+    };
+
+
+    this.mount = function (control, dom) {
+
+        base.mount.call(this, control, dom);
+
+        dom.style.fontFamily = 'digital';
+        show(dom, this.__text_name);
+    }
+
+
+    function show(dom, name) {
+
+        dom[name] = new Date().format('yyyy-MM-dd hh:mm:ss');
+
+        setTimeout(function () {
+
+            show(dom, name);
+
+        }, 1000);
+    }
+
+
+});
+
+
+
+flyingon.Panel.extend('ChartPanel', function (Class, base) {
+
+
+    this.defaultWidth = 350;
+
+    this.defaultHeight = 200;
+
+
+    this.defineProperty('title', '', {
+
+        set: this.render   
+    });
+
+
+}).register();
+
+
+
+flyingon.renderer('ChartPanel', 'Panel', function (base) {
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<div');
+        
+        render.call(this, writer, control);
+
+        writer.push('>',
+            '<div class="f-chartpanel-head">',
+                '<span class="f-chartpanel-title"></span>',
+                '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">',
+                    '<path d="M0 1 S8 0 12 8 L20 24 S23 25 26 25" />',
+                '</svg>',
+                '<span class="f-chartpanel-img"></span>',
+            '</div>',
+            '<div class="f-chartpanel-corner" index="1"></div>',
+            '<div class="f-chartpanel-corner" index="2"></div>',
+            '<div class="f-chartpanel-corner" index="3"></div>',
+            '<div class="f-chartpanel-corner" index="4"></div>',
+            '<div class="f-chartpanel-body">');
+
+        if (control.length > 0 && control.__visible)
+        {
+            control.__content_render = true;
+            this.__render_children(writer, control, control, 0, control.length);
+        }
+
+        writer.push(this.__scroll_html, '</div>',
+            '</div>');
+    };
+
+    
+    this.mount = function (control, view) {
+
+        control.view_content = view.lastChild;
+        base.mount.call(this, control, view);
+    };
+
+
+
+    this.title = function (control, dom, value) {
+
+        dom.firstChild.firstChild[this.__text_name] = value;
+    }
+
+
+});
+
+
+
+flyingon.HomePlugin = flyingon.widget({
+
+    template: {
+        Class: 'Plugin',
+        layout: 'dock',
+        className: 'home',
+        backgroundColor: '#07051a',
+        children: [
+            {
+                Class: 'Panel',
+                height: 118,
+                dock: 'top',
+                children: [
+                    {
+                        Class: 'Label',
+                        text: '顺彩BI图表分析平台',
+                        width: '100%',
+                        height: 60,
+                        margin: '12 0',
+                        textAlign: 'center',
+                        fontSize: '24px'
+                    },
+                    {
+                        Class: 'HomeTime',
+                        width: '100%',
+                        textAlign: 'center',
+                        fontSize: '20px'
+                    }
+                ]
+            },
+            {
+                Class: 'Panel',
+                dock: 'fill',
+                padding: 10,
+                children: [
+                    {
+                        Class: 'HomeBox',
+                        icon: 'icon-chart',
+                        text: 'text',
+                        value: '12345.678'
+                    },
+                    {
+                        Class: 'ChartPanel',
+                        title: 'test test test'
+                    }
+                ]
+            }
+        ]
+    },
+
+    created: function () {
+
+        
+    }
+
+});
+
+
+
 flyingon.ChartPlugin = flyingon.widget({
 
     template: {
         Class: 'Plugin',
         layout: 'dock',
-        padding: '8 0 0 8',
         children: [
             {
                 Class: 'ToolBar',
+                id: 'chart-tool',
                 dock: 'top',
                 height: 40,
                 border: '0 0 1 0',
                 padding: 4,
-                backgroundColor: '#F0F3FA',
                 children: [
                     { 
                         Class: 'Button',

@@ -5,6 +5,7 @@ var host = flyingon.view({
     template: {
 
         Class: 'Panel',
+        backgroundColor: '#134f73',
         layout: {
             type: 'dock',
             spacingX: 0,
@@ -21,8 +22,7 @@ var host = flyingon.view({
                 height: 50,
                 border: 1,
                 padding: 10,
-                //backgroundColor: '#3c8dbc',
-                backgroundColor: '#165171',
+                backgroundColor: 'rgb(7, 5, 26)',
                 color: 'white',
                 children: [
                     {
@@ -54,12 +54,6 @@ var host = flyingon.view({
                         fontSize: '14px',
                         color: 'white',
                         cursor: 'pointer'
-                    },
-                    {
-                        Class: 'File',
-                        id: 'import',
-                        text: 'import',
-                        accept: '.csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
                     }
                 ]
             },
@@ -69,8 +63,9 @@ var host = flyingon.view({
                 dock: 'left',
                 width: 200,
                 maxWidth: 300,
-                fontSize: '13px',
-                backgroundColor: '#1c5b7e',
+                border: 0,
+                fontSize: '14px',
+                backgroundColor: 'rgb(7, 5, 26)',
                 color: 'white'
                 //树上结节的图标颜色如何设置？
                 
@@ -83,8 +78,11 @@ var host = flyingon.view({
                 Class: 'Tab',
                 id: 'host',
                 dock: 'fill',
+                header: 0,
+                border: 0,
                 size: 'auto',
-                selected: 0
+                selected: 0,
+                backgroundColor: 'white'// 'rgb(7, 5, 26)'
             }
         ]
     },
