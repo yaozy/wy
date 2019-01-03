@@ -558,26 +558,32 @@ flyingon.HomePlugin = flyingon.widget({
             {
                 Class: 'Panel',
                 dock: 'fill',
-                padding: 10,
-                children: [
-                    {
-                        Class: 'HomeBox',
-                        icon: 'icon-chart',
-                        text: 'text',
-                        value: '12345.678'
-                    },
-                    {
-                        Class: 'ChartPanel',
-                        title: 'test test test'
-                    }
-                ]
+                layout: 'dock',
+                margin: '-12 0 0 0',
+                padding: 10
             }
         ]
     },
 
     created: function () {
 
-        
+
+        var host = this[1];
+
+
+        flyingon.toast({
+
+            text: '正在加载数据，请稍候......',
+            time: 30000,
+            loading: true
+        });
+
+        flyingon.http.get('chart-home/main').json(function (data) {
+         
+            flyingon.toast.hide();
+            host.push.apply(host, data[0]);
+        });
+
     }
 
 });

@@ -49,3 +49,7 @@ app.route('/chart-meta', async (context, next) => {
 
     await next();
 });
+
+
+
+app.route('/chart-home', require('./home.js'));

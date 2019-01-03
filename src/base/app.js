@@ -1,3 +1,4 @@
+const fs = require('fs');
 const App = require('flyingon-server');
 
 const plugins = App.plugins;
@@ -8,6 +9,12 @@ const cache = plugins.cache(43200);
 
 // 创建app实例
 const app = module.exports = new App(require('../../settings'));
+
+
+if (!fs.existsSync('./log'))
+{
+    fs.mkdirSync('./log');
+}
 
 
 // 加载基础库
