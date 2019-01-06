@@ -32,11 +32,11 @@ module.exports = {
                     children: [
                         {
                             Class: 'HomeChart',
+                            table: 'sjl',
                             width: '100%',
                             height: '100%',
-                            table: 'sjl',
                             template: {
-                                category: ['项目名称'],
+                                category: '项目名称',
                                 value: ['收缴率'],
                                 legend: {},
                                 tooltip: {},
@@ -45,6 +45,9 @@ module.exports = {
                                 },
                                 yAxis: [
                                     { name: '收缴率', type: 'value' }
+                                ],
+                                series: [
+                                    { name: '收缴率', type: 'bar' }
                                 ]
                             }
                         }
@@ -80,7 +83,8 @@ module.exports = {
                     children: [
                         {
                             Class: 'HomeChart',
-                            dock: 'top',
+                            width: '100%',
+                            height: '100%',
                             table: 'sjl',
                             template: {
                                 category: ['项目名称'],
@@ -119,7 +123,7 @@ module.exports = {
                     Class: 'Panel',
                     dock: 'bottom',
                     height: 80,
-                    padding: '0 20',
+                    padding: '2 20',
                     layout: {
                         type: 'table',
                         spacingX: 10,
@@ -128,7 +132,32 @@ module.exports = {
                     children: [
                         {
                             Class: 'HomeBox',
-                            url: 'chart/6'
+                            url: 'chart/6',
+                            padding: '10 0',
+                            layout: {
+                                type: 'table',
+                                data: '*[40 *[* *]]'
+                            },
+                            children: [
+                                {
+                                    Class: 'HomeIcon',
+                                    icon: 'icon-charttype',
+                                    height: 30,
+                                    alignY: 'middle',
+                                    color: 'skyblue'
+                                },
+                                {
+                                    Class: 'HomeText',
+                                    text: '收缴率'
+                                },
+                                {
+                                    Class: 'HomeText',
+                                    table: 'sjl',
+                                    field: '收缴率',
+                                    textShadow: '0 0 4px red',
+                                    fontSize: '20px'
+                                }
+                            ]
                         },
                         {
                             Class: 'HomeBox',

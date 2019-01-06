@@ -1,4 +1,552 @@
-flyingon.Chart = flyingon.Control.extend(function (Class, base) {
+flyingon.Control.extend('DigitalTime', function () {
+
+
+}).register();
+
+
+
+flyingon.renderer('DigitalTime', function (base) {
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<div');
+        
+        render.call(this, writer, control);
+
+        writer.push('></div>');
+    };
+
+
+    this.mount = function (control, dom) {
+
+        base.mount.call(this, control, dom);
+
+        dom.style.fontFamily = 'digital';
+        show(dom, this.__text_name);
+    }
+
+
+    function show(dom, name) {
+
+        dom[name] = new Date().format('yyyy-MM-dd hh:mm:ss');
+
+        setTimeout(function () {
+
+            show(dom, name);
+
+        }, 1000);
+    }
+
+
+});
+
+
+flyingon.Control.extend('HomeChart', function () {
+
+
+
+    this.__custom_set = function (name, value) {
+
+        this[name] = value;
+    }
+
+
+    function fieldValues(data, field) {
+
+        var array = [];
+
+        for (var i = data.length; i--;)
+        {
+            array[i] = data[i][field];
+        }
+
+        return array;
+    }
+
+
+    this.setData = function (dataset) {
+
+        var template = this.template,
+            data = dataset[this.table],
+            any;
+
+        if (!data)
+        {
+            flyingon.showMessage('图表配置错误', 'table "' + this.table + '"不存在!', 'information', 'ok');
+            return;
+        }
+
+        if ((any = template.xAxis) && any.type === 'category')
+        {
+            any.data = fieldValues(data, template.category);
+        }
+        else if ((any = template.yAxis) && any.type === 'category')
+        {
+            any.data = fieldValues(data, template.category);
+        }
+
+        if (any = template.series)
+        {
+            var valueFields = template.valueFields;
+
+            if (!(any instanceof Array))
+            {
+                any = template.series = [];
+
+                for (var i = valueFields.length; i--;)
+                {
+                    any[i] = Object.assign({}, any);
+                    any[i].name = valueFields[i];
+                }
+            }
+
+            for (var i = any.length; i--;)
+            {
+                any[i].data = fieldValues(data, any[i].name);
+            }
+        }
+
+        setTimeout(function () {
+
+            (this.chart || (this.chart = echarts.init(this.view))).setOption(template);
+
+        }.bind(this));
+    }
+
+
+    this.refreshChart = function () {
+
+        if (this.chart)
+        {
+            this.chart.resize();
+        }
+    }
+
+
+
+}).register();
+
+
+
+flyingon.Control.extend('HomeIcon', function () {
+
+
+    this.defaultWidth = this.defaultHeight = 40;
+
+
+    this.defineProperty('icon', '', {
+
+        set: this.render
+    });
+
+
+}).register();
+
+
+
+flyingon.renderer('HomeIcon', function (base) {
+
+
+    
+    this.lineHeight = 1;
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<span');
+        
+        render.call(this, writer, control);
+        
+        writer.push('></span>');
+    };
+
+
+    this.icon = function (control, view, value) {
+
+        view.classList.add(value);
+    };
+
+});
+
+
+
+flyingon.Control.extend('HomeText', function () {
+
+
+
+    this.defineProperty('text', '', {
+
+        set: this.render
+    });
+
+
+    
+    this.defineProperty('table', '');
+
+
+    this.defineProperty('field', '');
+
+
+    this.setData = function (dataset) {
+
+        var table = this.table(),
+            field = this.field();
+
+        if (table && field && (table = dataset[table]))
+        {
+            this.text(table[0][field]);
+        }
+    }
+
+
+
+}).register();
+
+
+
+flyingon.renderer('HomeText', function (base) {
+
+
+
+    this.lineHeight = 1;
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<span');
+        
+        render.call(this, writer, control);
+        
+        writer.push('></span>');
+    };
+
+
+    this.text = function (control, view, value) {
+
+        view[this.__text_name] = value;
+    };
+
+
+});
+
+
+
+flyingon.Panel.extend('HomeBox', function () {
+
+
+    this.defaultWidth = 150;
+
+    this.defaultHeight = 60;
+
+
+}).register();
+
+
+
+flyingon.renderer('HomeBox', 'Panel', function (base) {
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<div');
+        
+        render.call(this, writer, control);
+
+        writer.push('>',
+            '<span class="f-homebox-corner1"></span>',
+            '<span class="f-homebox-corner2"></span>',
+            '<span class="f-homebox-corner3"></span>',
+            '<span class="f-homebox-corner4"></span>',
+            '<div class="f-homebox-body">');
+
+        if (control.length > 0 && control.__visible)
+        {
+            control.__content_render = true;
+            this.__render_children(writer, control, control, 0, control.length);
+        }
+
+        writer.push(this.__scroll_html, '</div></div>');
+    };
+
+
+    this.mount = function (control, view) {
+
+        control.view_content = view.lastChild;
+        base.mount.call(this, control, view);
+    };
+
+
+});
+
+
+
+flyingon.Panel.extend('ChartPanel', function () {
+
+
+    this.defaultWidth = 350;
+
+    this.defaultHeight = 200;
+
+
+    this.defineProperty('title', '', {
+
+        set: this.render   
+    });
+
+
+    this.arrangeArea = function () {
+
+        this.arrangeHeight -= 26;
+        this.arrangeBottom -= 26;
+    };
+
+
+}).register();
+
+
+
+flyingon.renderer('ChartPanel', 'Panel', function (base) {
+
+
+    this.render = function (writer, control, render) {
+
+        writer.push('<div');
+        
+        render.call(this, writer, control);
+
+        writer.push('>',
+            '<div class="f-chartpanel-head">',
+                '<span class="f-chartpanel-title"></span>',
+                '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">',
+                    '<path d="M0 1 S8 0 12 8 L20 24 S23 25 26 25" />',
+                '</svg>',
+                '<span class="f-chartpanel-img"></span>',
+            '</div>',
+            '<div class="f-chartpanel-corner" index="1"></div>',
+            '<div class="f-chartpanel-corner" index="2"></div>',
+            '<div class="f-chartpanel-corner" index="3"></div>',
+            '<div class="f-chartpanel-corner" index="4"></div>',
+            '<div class="f-chartpanel-body">');
+
+        if (control.length > 0 && control.__visible)
+        {
+            control.__content_render = true;
+            this.__render_children(writer, control, control, 0, control.length);
+        }
+
+        writer.push(this.__scroll_html, '</div>',
+            '</div>');
+    };
+
+    
+    this.mount = function (control, view) {
+
+        control.view_content = view.lastChild;
+        base.mount.call(this, control, view);
+    };
+
+
+
+    this.title = function (control, dom, value) {
+
+        dom.firstChild.firstChild[this.__text_name] = value;
+    }
+
+
+});
+
+
+
+flyingon.HomePlugin = flyingon.widget({
+
+    template: {
+        Class: 'Plugin',
+        layout: 'dock',
+        className: 'home',
+        backgroundColor: '#07051a',
+        children: [
+            {
+                Class: 'Panel',
+                height: 118,
+                dock: 'top',
+                children: [
+                    {
+                        Class: 'Label',
+                        text: '顺彩BI图表分析平台',
+                        width: '100%',
+                        height: 60,
+                        margin: '12 0',
+                        textAlign: 'center',
+                        fontSize: '24px'
+                    },
+                    {
+                        Class: 'DigitalTime',
+                        width: '100%',
+                        textAlign: 'center',
+                        fontSize: '20px'
+                    }
+                ]
+            },
+            {
+                Class: 'Panel',
+                dock: 'fill',
+                layout: 'dock',
+                margin: '-12 0 0 0',
+                padding: 10
+            }
+        ]
+    },
+
+    created: function () {
+
+
+        var host = this[1];
+
+        var size;
+
+        var timeout;
+
+
+
+        host.on('click', function (event) {
+
+            var target = event.target,
+                url;
+
+            while (target && target !== this)
+            {
+                if (url = target.url)
+                {
+                    if (checkUrl(globals.menutree, url))
+                    {
+                        location.hash = '!' + url;
+                    }
+                    else
+                    {
+                        flyingon.showMessage('提醒', '您没有查看此图表的权限!', 'information', 'ok');
+                    }
+                    
+                    return;
+                }
+
+                target = target.parent;
+            }
+        });
+
+
+
+        function checkResize() {
+        
+            var value = host.offsetWidth << 8 + host.offsetHeight;
+
+            if (value !== size)
+            {
+                if (size > 0)
+                {
+                    var controls = [];
+                    
+                    findControls(host, 'refreshChart', controls);
+
+                    for (var i = controls.length; i--;)
+                    {
+                        controls[i].refreshChart();
+                    }
+                }
+
+                size = value;
+            }
+
+            timeout = setTimeout(checkResize, 100);
+        }
+
+
+        function refresh() {
+            
+            if (timeout)
+            {
+                clearTimeout(timeout);
+                timeout = 0;
+            }
+
+            flyingon.toast({
+
+                text: '正在加载数据，请稍候......',
+                time: 30000,
+                loading: true
+            });
+
+            flyingon.http.get('chart-home/main').json(update);
+        }
+
+
+        function update(data) {
+
+            var controls = [];
+
+            flyingon.toast.hide();
+
+            host.push.apply(host, data[0]);
+
+            findControls(host, 'setData', controls);
+
+            data = data[1];
+
+            for (var i = controls.length; i--;)
+            {
+                controls[i].setData(data);
+            }
+
+            timeout = setTimeout(checkResize, 100);
+        }
+
+
+        function findControls(parent, name, outputs) {
+
+            for (var i = parent.length; i--;)
+            {
+                if (parent[i][name])
+                {
+                    outputs.push(parent[i]);
+                }
+                else if (parent[i].length > 0)
+                {
+                    findControls(parent[i], name, outputs);
+                }
+            }
+        }
+
+
+
+        function checkUrl(list, url) {
+
+            for (var i = list.length; i--;)
+            {
+                var item = list[i];
+
+                if (item.url === url)
+                {
+                    return true;
+                }
+
+                if (item.children && checkUrl(item.children, url))
+                {
+                    return true;
+                }
+            }
+        }
+
+
+        refresh();
+
+    }
+
+});
+
+
+
+
+flyingon.Control.extend(function (Class, base) {
 
 
 
@@ -326,267 +874,7 @@ flyingon.Chart = flyingon.Control.extend(function (Class, base) {
 
 
 
-}).register('Chart');
-
-
-
-
-flyingon.Control.extend('HomeBox', function (Class, base) {
-
-
-    this.defaultWidth = 150;
-
-    this.defaultHeight = 60;
-
-
-    this.defineProperty('icon', '', {
-    
-        set: this.render
-    });
-
-
-    this.defineProperty('text', '', {
-    
-        set: this.render
-    });
-
-
-    this.defineProperty('value', '', {
-    
-        set: this.render
-    });
-
-
-}).register();
-
-
-
-flyingon.renderer('HomeBox', function (base) {
-
-
-    this.render = function (writer, control, render) {
-
-        writer.push('<div');
-        
-        render.call(this, writer, control);
-        
-        writer.push('>',
-                '<div class="f-homebox-host">',
-                    '<div class="f-homebox-icon"></div>',
-                    '<div>',
-                        '<div class="f-homebox-text"></div>',
-                        '<div class="f-homebox-value"></div>',
-                    '</div>',
-                '</div>',
-                '<span class="f-homebox-corner1"></span>',
-                '<span class="f-homebox-corner2"></span>',
-                '<span class="f-homebox-corner3"></span>',
-                '<span class="f-homebox-corner4"></span>',
-            '</div>');
-    };
-
-
-    this.icon = function (control, dom, value) {
-
-        dom = dom.firstChild.firstChild;
-        dom.className = 'f-homebox-icon ' + value;
-        dom.nextSibling.style.left = value ? '30px' : 0;
-    }
-
-
-    this.text = function (control, dom, value) {
-
-        dom.firstChild.lastChild.firstChild[this.__text_name] = value;
-    }
-
-
-    this.value = function (control, dom, value) {
-
-        dom.firstChild.lastChild.lastChild[this.__text_name] = value;
-    }
-
-
-});
-
-
-
-flyingon.Control.extend('HomeTime', function (Class, base) {
-
-
-}).register();
-
-
-
-flyingon.renderer('HomeTime', function (base) {
-
-
-    this.render = function (writer, control, render) {
-
-        writer.push('<div');
-        
-        render.call(this, writer, control);
-
-        writer.push('></div>');
-    };
-
-
-    this.mount = function (control, dom) {
-
-        base.mount.call(this, control, dom);
-
-        dom.style.fontFamily = 'digital';
-        show(dom, this.__text_name);
-    }
-
-
-    function show(dom, name) {
-
-        dom[name] = new Date().format('yyyy-MM-dd hh:mm:ss');
-
-        setTimeout(function () {
-
-            show(dom, name);
-
-        }, 1000);
-    }
-
-
-});
-
-
-
-flyingon.Panel.extend('ChartPanel', function (Class, base) {
-
-
-    this.defaultWidth = 350;
-
-    this.defaultHeight = 200;
-
-
-    this.defineProperty('title', '', {
-
-        set: this.render   
-    });
-
-
-}).register();
-
-
-
-flyingon.renderer('ChartPanel', 'Panel', function (base) {
-
-
-    this.render = function (writer, control, render) {
-
-        writer.push('<div');
-        
-        render.call(this, writer, control);
-
-        writer.push('>',
-            '<div class="f-chartpanel-head">',
-                '<span class="f-chartpanel-title"></span>',
-                '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">',
-                    '<path d="M0 1 S8 0 12 8 L20 24 S23 25 26 25" />',
-                '</svg>',
-                '<span class="f-chartpanel-img"></span>',
-            '</div>',
-            '<div class="f-chartpanel-corner" index="1"></div>',
-            '<div class="f-chartpanel-corner" index="2"></div>',
-            '<div class="f-chartpanel-corner" index="3"></div>',
-            '<div class="f-chartpanel-corner" index="4"></div>',
-            '<div class="f-chartpanel-body">');
-
-        if (control.length > 0 && control.__visible)
-        {
-            control.__content_render = true;
-            this.__render_children(writer, control, control, 0, control.length);
-        }
-
-        writer.push(this.__scroll_html, '</div>',
-            '</div>');
-    };
-
-    
-    this.mount = function (control, view) {
-
-        control.view_content = view.lastChild;
-        base.mount.call(this, control, view);
-    };
-
-
-
-    this.title = function (control, dom, value) {
-
-        dom.firstChild.firstChild[this.__text_name] = value;
-    }
-
-
-});
-
-
-
-flyingon.HomePlugin = flyingon.widget({
-
-    template: {
-        Class: 'Plugin',
-        layout: 'dock',
-        className: 'home',
-        backgroundColor: '#07051a',
-        children: [
-            {
-                Class: 'Panel',
-                height: 118,
-                dock: 'top',
-                children: [
-                    {
-                        Class: 'Label',
-                        text: '顺彩BI图表分析平台',
-                        width: '100%',
-                        height: 60,
-                        margin: '12 0',
-                        textAlign: 'center',
-                        fontSize: '24px'
-                    },
-                    {
-                        Class: 'HomeTime',
-                        width: '100%',
-                        textAlign: 'center',
-                        fontSize: '20px'
-                    }
-                ]
-            },
-            {
-                Class: 'Panel',
-                dock: 'fill',
-                layout: 'dock',
-                margin: '-12 0 0 0',
-                padding: 10
-            }
-        ]
-    },
-
-    created: function () {
-
-
-        var host = this[1];
-
-
-        flyingon.toast({
-
-            text: '正在加载数据，请稍候......',
-            time: 30000,
-            loading: true
-        });
-
-        flyingon.http.get('chart-home/main').json(function (data) {
-         
-            flyingon.toast.hide();
-            host.push.apply(host, data[0]);
-        });
-
-    }
-
-});
+}).register('ChartView');
 
 
 
@@ -705,7 +993,7 @@ flyingon.ChartPlugin = flyingon.widget({
                 margin: '8 0 0 0',
                 children: [
                     {
-                        Class: 'Chart',
+                        Class: 'ChartView',
                         dock: 'fill'
                     }
                 ]

@@ -2810,7 +2810,7 @@ Function.prototype.bind || (Function.prototype.bind = function (context) {
     }
 
 
-    prototype.pow = function (value) {
+    prototype.pow10 = function (value) {
 
         if (value |= 0)
         {
@@ -2915,7 +2915,7 @@ Function.prototype.bind || (Function.prototype.bind = function (context) {
 
 
     // 扩展数字方法
-    prototype = Number.prototype;
+    var number = Number.prototype;
 
 
     // 注: 不同浏览器toFixed有差异, chrome使用的是银行家舍入规则
@@ -2924,14 +2924,14 @@ Function.prototype.bind || (Function.prototype.bind = function (context) {
     // 此处统一处理为四舍五入
     if ((1.115).toFixed(2) === '1.11')
     {
-        prototype.toFixed = function (digits) {
+        number.toFixed = function (digits) {
 
             return Decimal.call(cache, this).toFixed(digits);
         }
     }
 
 
-    prototype.round = function (digits) {
+    number.round = function (digits) {
 
         var value = +this;
 
@@ -18459,6 +18459,9 @@ Object.extend('Control', function () {
     //ellipsis	显示省略符号来代表被修剪的文本 	
     //string	使用给定的字符串来代表被修剪的文本 
     style(this, 'text-overflow');
+
+
+    style(this, 'text-shadow');
 
 
     //转换

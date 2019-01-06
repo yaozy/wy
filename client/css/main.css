@@ -53,7 +53,7 @@ body {
     top: 0;
     bottom: 0;
     background-color: #ffffff;
-    background-image: url(img/bg.jpg);
+    background-image: url(../img/bg.jpg);
     background-repeat: no-repeat;
     background-position-x: center;
     background-position-y: center;
@@ -206,12 +206,24 @@ body {
 }
 
 
+
+.f-homeicon {
+    font-family: iconfont;
+    font-size: 30px;
+    text-align: center;
+}
+
+.f-hometext {
+    font-size: 16px;
+}
+
+
 .f-homebox {
     width: 200px;
     height: 50px;
 }
 
-.f-homebox-host {
+.f-homebox-body {
     position: absolute;
     top: 0;
     left: 0;
@@ -220,38 +232,8 @@ body {
     border: 1px solid #134f73;
 }
 
-.f-homebox-icon {
+.f-homebox-body>.f-control {
     position: absolute;
-    width: 30px;
-    height: 30px;
-    top: 50%;
-    left: 0;
-    margin-top: -15px;
-    font-family: iconfont;
-    font-size: 20px;
-    text-align: center;
-    line-height: 30px;
-}
-
-.f-homebox-host>div:last-child {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-}
-
-.f-homebox-text {
-    height: 30px;
-    padding-left: 6px;
-    line-height: 30px;
-    font-size: 14px;
-}
-
-.f-homebox-value {
-    font-family: digital;
-    font-size: 20px;
-    text-align: center;
 }
 
 .f-homebox>span {
@@ -260,6 +242,7 @@ body {
     height: 8px;
     border-width: 3px;
     border-color: #1771a5;
+    z-index: 2;
 }
 
 .f-homebox-corner1 {
@@ -296,6 +279,10 @@ body {
     white-space: nowrap;
     border-right: 10px solid transparent;
     box-sizing: border-box;
+}
+
+.f-chartpanel-body>.f-control {
+    position: absolute;
 }
 
 .f-chartpanel-corner {
