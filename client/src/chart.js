@@ -46,6 +46,8 @@ flyingon.widget({
                             // { Class: 'Button', key: 'out', width: 85, text: '数据导出', icon: 'icon-out' },
                             { Class: 'Button', key: 'datafix', width: 85, text: '数据维护', icon: 'icon-datafix' },
                             { Class: 'Button', key: 'refresh', width: 85, text: '刷新', icon: 'icon-refresh' },
+                            { Class: 'Lable', width: 20 },
+                            { Class: 'Button', key: 'homeset', width: 85, text: '首页配置', icon: 'icon-refresh' },
                             { Class: 'Button', key: 'search', text: '查询', width: 65, dock: 'right', icon: 'icon-search' },
                             { Class: 'TextBox', id: 'txtSearch', width: 200, placeholder: '请输入图表名称', dock: 'right' }
                         ]
@@ -108,7 +110,7 @@ flyingon.widget({
                 refresh(nodeId = tree[0].get('id'))
             }
             else {
-                alert('WARNING:');
+                alert('无图表分类数据！');
             }
         });
 
@@ -170,6 +172,10 @@ flyingon.widget({
                     searchClick();
                     break;
 
+                case 'homeset':
+                    homesetClick();
+                    break;
+
             };
 
         });
@@ -228,6 +234,7 @@ flyingon.widget({
             };
 
             var chartid = row.data.id;
+            var chartname = row.data.chartname;
             var table = '';
             var tablekey = '';
 
@@ -257,7 +264,11 @@ flyingon.widget({
                         { Class: 'Button', key: 'add', width: 85, text: '增加', icon: 'icon-add' },
                         { Class: 'Button', key: 'delete', width: 85, text: '删除', icon: 'icon-delete' },
                         { Class: 'Button', key: 'save', width: 85, text: '保存', icon: 'icon-save' },
-                        { Class: 'Button', key: 'in', width: 80, text: '导入', icon: 'icon-in' },
+                        //{ Class: 'Button', key: 'in', width: 80, text: '导入', icon: 'icon-in' },
+                        {
+                            Class: 'File', width: 80, text: '导入', icon: 'icon-in',
+                            accept: '.csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+                        },
                         { Class: 'Button', key: 'out', width: 80, text: '导出', icon: 'icon-out' },
                         { Class: 'Button', key: 'refresh', width: 85, text: '刷新', icon: 'icon-refresh' }
                         // { Class: 'Button', key: 'search', text: '查询', width: 65, dock: 'right', icon: 'icon-search' },
@@ -331,6 +342,8 @@ flyingon.widget({
                     case 'refresh':
                         fixrefreshClick();
                         break;
+
+
                 }
             });
 
@@ -400,13 +413,44 @@ flyingon.widget({
 
 
             function fixinClick() {
-                //
-                alert('待完善');
+                // //
+                // //alert('待完善');
+
+
+
+                // flyingon.importXlsx(event.dom.files[0], function (data) {
+               
+                //     debugger
+                // });
+
             };
 
+            dialog.findByType('File').on('change', function (event) {
+
+                flyingon.importXlsx(event.dom.files[0], function (data) {
+                   
+                    debugger
+
+                });
+            });
+
             function fixoutClick() {
-                //
-                alert('待完善');
+
+                var data = [],
+                    ds = chartDataset;
+
+                for (var i = ds.length; i--;)
+                {
+                    data[i] = ds[i].data;
+                }
+
+                // alert(chartGrid.columns[0].title);
+                // alert(chartGrid.rows['orgcode']);
+                // chartDataset
+                // var outdata = [{ a: 1, b: 2 }, { a: 11, b: 22 }];
+
+                flyingon.exportToXlsx('chartname', data);
+
             };
 
 
@@ -424,9 +468,6 @@ flyingon.widget({
 
 
         };
-
-
-
 
 
         // function refreshClick() {
@@ -454,24 +495,12 @@ flyingon.widget({
 
                 var col = event.target.column.name();
 
-                // if (col === 'chartjson' || col === 'homejson') {
                 if (col === 'chartjson') {
 
                     var caption, fldName;
-
-                    switch (col) {
-                        case 'chartjson':
-                            caption = '图表配置';
-                            fldName = 'chartjson';
-                            break;
-
-                        // case 'homejson':
-                        //     caption = '首层图表配置';
-                        //     fldName = 'homejson';
-                        //     break;
-
-                    }
-
+                    caption = '图表配置';
+                    fldName = 'chartjson';
+                    
                     var dialog = window.dialog = new flyingon.Dialog();
 
                     // dialog.resizable(true);
@@ -531,7 +560,7 @@ flyingon.widget({
 
                                 dataset.current().set(fldName, editor.getValue());
                                 saveClick();
-                                
+
                             }, 1);
 
                             e.stopPropagation();
@@ -553,6 +582,99 @@ flyingon.widget({
 
         };
 
+
+        function homesetClick() {
+
+            var homepageid = 0;
+            var dialog = window.dialog = new flyingon.Dialog();
+
+            // dialog.resizable(true);
+            dialog.text('首页配置');
+            dialog.padding(8);
+            dialog.layout('dock');
+            dialog.width(1000);
+            dialog.height(600);
+
+
+            dialog.showDialog();
+
+            var body = dialog.view_content;
+
+            body.style.padding = '0';
+            body.innerHTML = '<textarea style="width:100%;height:100%;font-size:16px;"></textarea>';
+
+            var memo = dialog.view_content.firstChild;
+            var editor;
+
+            flyingon.http.get('homepage').then(function (result) {
+
+                result = JSON.parse(result);
+
+                if (result.length > 0) {
+
+                    homepageid = result[0].id;
+                    memo.value = result[0].pagejson;
+
+                    editor = CodeMirror.fromTextArea(memo, {
+        
+                        mode: 'javascript',     // 编辑器语言
+                        lineNumbers: true,
+                        indentUnit: 4,          // 缩进单位
+                        smartIndent: false,      // 自动缩进
+                        // theme: 'seti',       // 选择主题,没引入主题的话可以不写
+                        matchBrackets: true,    // 括号匹配
+                    });
+                }
+                else {
+                    alert('无系统首页配置数据！');
+                }
+            });
+
+
+            body.lastChild.style.height = '100%';
+
+            dialog.on('closed', function () {
+
+                var keys = [];
+                keys.push(homepageid);
+                keys.push(editor.getValue());
+
+                flyingon.http.put('homepage', JSON.stringify(keys)).then(function () {
+
+                    flyingon.toast('首页配置保存成功！');
+                });
+
+            });
+
+            //ctrl+s 保存图表配置
+            dialog.on('keydown', function (e) {
+
+                e = window.event || e;
+                if (e.keyCode == 83 && e.ctrlKey) {
+
+                    /*延迟，兼容FF浏览器  */
+                    setTimeout(function () {
+
+                        //alert('ctrl+s');
+
+                        var keys = [];
+                        keys.push(homepageid);
+                        keys.push(editor.getValue());
+
+                        flyingon.http.put('homepage', JSON.stringify(keys)).then(function () {
+
+                            flyingon.toast('首页配置保存成功!');
+                        });
+
+                    }, 1);
+
+                    e.stopPropagation();
+                    e.preventDefault();
+                    return false;
+                }
+            });
+
+        }
     }
 
 
