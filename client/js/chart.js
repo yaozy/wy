@@ -859,24 +859,24 @@ flyingon.HomePlugin = flyingon.widget({
         children: [
             {
                 Class: 'Panel',
-                height: 118,
+                height: 80,
                 dock: 'top',
                 children: [
                     {
                         Class: 'Label',
-                        text: '顺彩BI图表分析平台',
+                        text: '顺彩BI智能分析系统',
                         width: '100%',
                         height: 60,
                         margin: '12 0',
                         textAlign: 'center',
                         fontSize: '24px'
-                    },
-                    {
-                        Class: 'DigitalTime',
-                        width: '100%',
-                        textAlign: 'center',
-                        fontSize: '20px'
-                    }
+                    }//,
+                    // {
+                    //     Class: 'DigitalTime',
+                    //     width: '100%',
+                    //     textAlign: 'center',
+                    //     fontSize: '20px'
+                    // }
                 ]
             },
             {
