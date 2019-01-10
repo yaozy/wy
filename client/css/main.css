@@ -362,3 +362,7 @@ body {
     border-radius: 8px;
     border-top-left-radius: 0;
 }
+
+.f-homemap {
+    border: 1px solid #134f73;
+}

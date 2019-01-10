@@ -116,14 +116,16 @@ module.exports = {
         {
             Class: 'Panel',
             dock: 'fill',
-            padding: 5,
-            layout: 'dock',
+            padding: '5 20',
+            layout: {
+                type: 'dock',
+                spacingY: 10
+            },
             children: [
                 {
                     Class: 'Panel',
                     dock: 'bottom',
                     height: 80,
-                    padding: '2 20',
                     layout: {
                         type: 'table',
                         spacingX: 10,
@@ -170,7 +172,7 @@ module.exports = {
                     ]
                 },
                 {
-                    Class: 'Panel',
+                    Class: 'HomeMap',
                     dock: 'fill'
                 }
             ]

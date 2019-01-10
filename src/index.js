@@ -15,7 +15,8 @@ app.route('/icon', false, static('./client/icon'));
 app.route('/img', false, static('./client/img'));
 app.route('/samples', false, static('./client/samples'));
 app.route('/pages', false, static('./client/src'));
-
+app.route('/map', false, static('./client/map'));
+app.route('/static', false, static('./client/static'));
 
 
 // 登录接口
