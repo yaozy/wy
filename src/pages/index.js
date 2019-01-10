@@ -89,3 +89,5 @@ app.route('/role2user', false, require('./role2user'));
 
 app.route('/charttbstru', false, require('./charttbstru'));
 app.route('/chartdata', false, require('./chartdata'));
+
+app.route('/homepage', false, require('./homepage'));
