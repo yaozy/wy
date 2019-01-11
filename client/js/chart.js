@@ -859,7 +859,7 @@ flyingon.HomePlugin = flyingon.widget({
         children: [
             {
                 Class: 'Panel',
-                height: 80,
+                height: 90,
                 dock: 'top',
                 children: [
                     {
