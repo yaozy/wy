@@ -331,10 +331,6 @@ flyingon.widget({
                         fixsaveClick();
                         break;
 
-                    case 'in':
-                        fixinClick();
-                        break;
-
                     case 'out':
                         fixoutClick();
                         break;
@@ -411,20 +407,7 @@ flyingon.widget({
 
             };
 
-
-            function fixinClick() {
-                // //
-                // //alert('待完善');
-
-
-
-                // flyingon.importXlsx(event.dom.files[0], function (data) {
-               
-                //     debugger
-                // });
-
-            };
-
+            //从文件导入数据
             dialog.findByType('File').on('change', function (event) {
 
                 flyingon.importXlsx(event.dom.files[0], function (data) {
@@ -434,6 +417,7 @@ flyingon.widget({
                 });
             });
 
+            //导出表格数据
             function fixoutClick() {
 
                 var data = [],
@@ -442,14 +426,15 @@ flyingon.widget({
                 for (var i = ds.length; i--;)
                 {
                     data[i] = ds[i].data;
-                }
+                };
 
-                // alert(chartGrid.columns[0].title);
-                // alert(chartGrid.rows['orgcode']);
+                 //alert(chartGrid.columns[0].title);
+                 //alert(chartGrid.rows['orgcode']);
+
                 // chartDataset
                 // var outdata = [{ a: 1, b: 2 }, { a: 11, b: 22 }];
 
-                flyingon.exportToXlsx('chartname', data);
+                flyingon.exportToXlsx(chartname, data);
 
             };
 
@@ -606,6 +591,8 @@ flyingon.widget({
             var memo = dialog.view_content.firstChild;
             var editor;
 
+            //editor.setSize('100%','100%');
+
             flyingon.http.get('homepage').then(function (result) {
 
                 result = JSON.parse(result);
@@ -614,6 +601,7 @@ flyingon.widget({
 
                     homepageid = result[0].id;
                     memo.value = result[0].pagejson;
+                    //memo.height(598);
 
                     editor = CodeMirror.fromTextArea(memo, {
         
@@ -624,6 +612,9 @@ flyingon.widget({
                         // theme: 'seti',       // 选择主题,没引入主题的话可以不写
                         matchBrackets: true,    // 括号匹配
                     });
+
+                    editor.setSize('100%','100%');
+
                 }
                 else {
                     alert('无系统首页配置数据！');
