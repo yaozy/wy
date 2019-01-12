@@ -189,6 +189,12 @@ flyingon.widget({
 
             var rows = dataset.getChanges();
             if (rows.length > 0) {
+
+                //根据 省份与城市 字段，为 citypath 列赋值；
+                for (var i = rows.length; i--;) {
+                    rows[i].data.citypath = rows[i].data.provincename + '/' + rows[i].data.cityname;
+                };
+
                 flyingon.toast({ text: '正在保存数据，请稍候……', time: 60000, loading: true });
                 flyingon.http.post('org', rows.toJSON(true, 'id')).then(function (data) {
 
