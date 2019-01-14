@@ -24,7 +24,7 @@ module.exports = {
         //-- 租金预测分析
         zjycfx: `select 
                 月份,
-                月租金预测,
+                round(月租金预测 / 10000,2) as 月租金预测,
                 round(月租金应收/月总出租面积,2) as '合同平均单价'
             from (select 
                     CONCAT(month,'月') as '月份',
@@ -34,8 +34,7 @@ module.exports = {
                 from t_hp_rentfore 
                 where orgcode in (select orgcode from orginfo where isuse=1 and citypath like '江苏/南京市')
                 group by MONTH )d1
-            order by 月份
-            LIMIT 6 `,
+            order by 月份`,
 
         //-- 月支出分析
         yzcfx: `select 
@@ -49,18 +48,6 @@ module.exports = {
                     and month = MONTH(CURDATE())
                 group by feetype) d1
             order by d1.fee desc`,
-
-        yzcfx_test: `select 
-                cityname,
-                物业费,
-                公共资源收入,
-                自有经营收入,
-                产权车位服务费,
-                公摊水电费,
-                人防车位租赁费,
-                押金
-            from t_hp_expendfeelist_test 
-            where cityname = '江苏/南京市'`,
 
         //-- 月支出分析 --本年支出
         yzcfx_bn: `select sum(fee) as '本年支出' 
@@ -129,7 +116,7 @@ module.exports = {
         //-- 财务收入排名
         cwsrzb: `select 
                 concat(d1.feetype,' ',cast(round(d1.fee / 10000,0) as CHAR),'万') as '收入分类' ,
-                concat(cast(round(d1.fee*100.00 / (select sum(fee) as sumfee from t_hp_incomefeelist where orgcode in (select orgcode from orginfo where isuse=1 and citypath like '江苏/南京市')),2) as char),'%') as '收入占比' 
+                round(d1.fee*100.00 / (select sum(fee) as sumfee from t_hp_incomefeelist where orgcode in (select orgcode from orginfo where isuse=1 and citypath like '江苏/南京市')),2) as '收入占比' 
             from (select
                     feetype,
                     sum(fee) as fee
@@ -157,77 +144,72 @@ module.exports = {
                 {
                     Class: 'ChartPanel',
                     title: '出租率和出租总面积',
+                    padding: 10,
+                    layout: {
+                        type: 'table',
+                        spacingY: 10,
+                        data: '50* 200*[* *] *'
+                    },
                     children: [
+                        {},
+                        //出租率
                         {
-                            Class: 'Panel',
-                            //dock: 'center',
+                            Class: 'HomeBox',
+                            url: 'chart/11',
+                            padding: '10 0',
                             height: 80,
-                            padding: '2 20',
                             layout: {
                                 type: 'table',
-                                spacingX: 10,
-                                data: '*[* *]'
+                                data: '* *'
                             },
                             children: [
-
-                                //出租率
                                 {
-                                    Class: 'HomeBox',
-                                    //url: 'chart/6',
-                                    padding: '10 0',
-                                    //width: 200,
-                                    layout: {
-                                        type: 'table',
-                                        data: '* *'
-                                    },
-                                    children: [
-                                        {
-                                            Class: 'HomeText',
-                                            text: '出租率',
-                                            align: 'center',
-                                            color: 'DarkGray'
-                                        },
-                                        {
-                                            Class: 'HomeText',
-                                            align: 'center',
-                                            table: 'czl',
-                                            field: '出租率',
-                                            textShadow: '0 0 4px red',
-                                            fontSize: '25px',
-                                            color: 'CornflowerBlue',
-                                            fontFamily: 'digital'
-                                        }
-                                    ]
+                                    Class: 'HomeText',
+                                    text: '出租率',
+                                    align: 'center',
+                                    color: 'DarkGray'
                                 },
-
-                                //出租面积
                                 {
-                                    Class: 'HomeBox',
-                                    //url: 'chart/6',
-                                    padding: '10 0',
-                                    layout: {
-                                        type: 'table',
-                                        data: '* *'
-                                    },
-                                    children: [
-                                        {
-                                            Class: 'HomeText',
-                                            text: '出租面积',
-                                            align: 'center',
-                                            color: 'DarkGray'
-                                        },
-                                        {
-                                            Class: 'HomeText',
-                                            align: 'center',
-                                            table: 'czl',
-                                            field: '出租面积',
-                                            textShadow: '0 0 4px red',
-                                            fontSize: '25px',
-                                            color: 'CornflowerBlue',
-                                            fontFamily: 'digital'
-                                        }
-                                    ]
+                                    Class: 'HomeText',
+                                    align: 'center',
+                                    table: 'czl',
+                                    field: '出租率',
+                                    textShadow: '0 0 4px red',
+                                    fontSize: '25px',
+                                    color: 'CornflowerBlue',
+                                    fontFamily: 'digital'
+                                }
+                            ]
+                        },
+
+                        //出租面积
+                        {
+                            Class: 'HomeBox',
+                            //url: 'chart/6',
+                            padding: '10 0',
+                            height: 80,
+                            layout: {
+                                type: 'table',
+                                data: '* *'
+                            },
+                            children: [
+                                {
+                                    Class: 'HomeText',
+                                    text: '出租面积',
+                                    align: 'center',
+                                    color: 'DarkGray'
                                 },
+                                {
+                                    Class: 'HomeText',
+                                    align: 'center',
+                                    table: 'czl',
+                                    field: '出租面积',
+                                    textShadow: '0 0 4px red',
+                                    fontSize: '25px',
+                                    color: 'CornflowerBlue',
+                                    fontFamily: 'digital'
+                                }
+
                             ]
 
                         }]
@@ -239,7 +221,7 @@ module.exports = {
                 {
                     Class: 'ChartPanel',
                     title: '合同平均单价和租金预测分析',
-                    // url: 'chart/6',
+                     url: 'chart/10',
                     children: [
                         {
                             Class: 'HomeChart',
@@ -247,27 +229,22 @@ module.exports = {
                             width: '100%',
                             height: '100%',
                             template: {
-                                textStyle: {
-                                    color: 'White',
-                                    fontSize: 10
-                                },
+                                grid: { x: '10%', y: '30%', x2: '10%', y2: '20%' },
+                                textStyle: { color: 'White', fontSize: 10 },
                                 category: '月份',
                                 value: ['月租金预测', '合同平均单价'],
                                 legend: {
                                     data: ['月租金预测', '合同平均单价'],
-                                    textStyle: {
-                                        color: 'White',
-                                        fontSize: 10
-                                    }
+                                    textStyle: { color: 'White', fontSize: 10 }
                                 },
                                 tooltip: {},
                                 xAxis: { type: 'category' },
                                 yAxis: [
-                                    { name: '月租金预测', type: 'value' },
-                                    { name: '合同平均单价', type: 'value', position: 'right' }
+                                    { name: '万元', type: 'value' },
+                                    { name: '元/m2', type: 'value', position: 'right' }
                                 ],
                                 series: [
-                                    { name: '月租金预测', type: 'bar' },
+                                    { name: '月租金预测', type: 'bar', barWidth: 8, itemStyle: { normal: { color: '#008B8B' } } },
                                     { name: '合同平均单价', type: 'line', yAxisIndex: 1 }
                                 ]
                             }
@@ -288,45 +265,39 @@ module.exports = {
                             height: '100%',
                             template: {
                                 textStyle: { color: 'White', fontSize: 10 },
-
-                                category: ['支出分类'],
-                                value: ['支出占比'],
-
+                                category: ['物业分类'],
+                                value: ['占比'],
                                 tooltip: {
                                     trigger: 'item',
                                     formatter: "{a} <br/>{b}: {c} ({d}%)"
                                 },
-
                                 legend: {
-                                    textStyle: { color: 'White', fontSize: 10 },
                                     orient: 'vertical',
                                     x: 'right',
-                                    data: ['value']
+                                    data: ['物业分类'],
+                                    textStyle: { color: 'White', fontSize: 10 }
                                 },
+
                                 series: [
                                     {
-                                        name: ['物业费'],
+                                        name: '占比',
                                         type: 'pie',
                                         radius: ['50%', '70%'],
                                         avoidLabelOverlap: false,
-                                        data: ['物业费', '公共资源收入', '自有经营收入', '产权车位服务费', '公摊水电费', '人防车位租赁费', '押金'],
                                         label: {
                                             normal: {
                                                 show: false,
-                                                position: 'center'
+                                                position: 'center',
+                                                textStyle: { fontSize: '12' }
+                                                //}
                                             },
                                             emphasis: {
                                                 show: true,
-                                                textStyle: {
-                                                    fontSize: '30',
-                                                    fontWeight: 'bold'
-                                                }
+                                                textStyle: { fontSize: '12' }
                                             }
                                         },
                                         labelLine: {
-                                            normal: {
-                                                show: false
-                                            }
+                                            normal: { show: false }
                                         }
                                     }
                                 ]
@@ -362,36 +333,28 @@ module.exports = {
                             height: '100%',
                             table: 'yysqs',
                             template: {
-                                textStyle: {
-                                    color: 'White',
-                                    fontSize: 10
-                                },
+                                grid: { x: '12%', y: '20%', x2: '5%', y2: '20%' },
+                                textStyle: { color: 'White', fontSize: 10 },
                                 category: ['月份'],
                                 value: ['应收', '已收', '欠收'],
                                 legend: {
                                     data: ['应收', '已收', '欠收'],
-                                    top: '40%',
-                                    orient: 'vertical',
-                                    x: 'right',
-                                    textStyle: {
-                                        color: 'White',
-                                        fontSize: 10
-                                    }
+                                    right: '10%',
+                                    textStyle: { color: 'White', fontSize: 10 },
                                 },
                                 tooltip: {},
                                 xAxis: {
-                                    type: 'category'
+                                    type: 'category',
+                                    nameTextStyle: { color: 'White', fontSize: 5 }
                                 },
                                 yAxis: [
-                                    {
-                                        name: '应收(万元)',
-                                        type: 'value'
-                                    }
+                                    { name: '万元', type: 'value', nameTextStyle: { color: 'White', fontSize: 10 } }
                                 ],
                                 series: [
-                                    { name: '应收', type: 'bar' },
-                                    { name: '已收', type: 'bar' },
-                                    { name: '欠收', type: 'bar' }
+
+                                    { name: '应收', type: 'bar', barWidth: 8, itemStyle: { normal: { color: '#FFF68F' } } },
+                                    { name: '已收', type: 'bar', barWidth: 8, itemStyle: { normal: { color: '#00CD66' } } },
+                                    { name: '欠收', type: 'bar', barWidth: 8, itemStyle: { normal: { color: '#1E90FF' } } }
                                 ]
                             }
                         }
@@ -402,7 +365,7 @@ module.exports = {
                 {
                     Class: 'ChartPanel',
                     title: '收缴率排行榜',
-                    //url: 'chart/6',
+                    url: 'chart/6',
                     children: [
                         {
                             Class: 'HomeChart',
@@ -410,24 +373,25 @@ module.exports = {
                             height: '100%',
                             table: 'sjlphb',
                             template: {
+                                grid: { x: '20%', y: '10%', x2: '5%', y2: '20%' },
                                 textStyle: {
                                     color: 'White',
                                     fontSize: 10
                                 },
                                 category: ['项目名称'],
                                 value: ['收缴率'],
-                                legend: {
-                                    data: ['收缴率'],
-                                    textStyle: {
-                                        color: 'White',
-                                        fontSize: 10
-                                    }
-                                },
+                                // legend: {
+                                //     data: ['收缴率'],
+                                //     textStyle: {
+                                //         color: 'White',
+                                //         fontSize: 10
+                                //     }
+                                // },
                                 tooltip: {},
                                 xAxis: { name: '%', type: 'value' },
                                 yAxis: { type: 'category' },
                                 series: [
-                                    { name: '收缴率', type: 'bar' }
+                                    { name: '收缴率', type: 'bar', barWidth: 8, itemStyle: { normal: { color: '#1E90FF' } } }
                                 ]
                             }
                         }
@@ -446,16 +410,18 @@ module.exports = {
                             height: '100%',
                             table: 'cwsrzb',
                             template: {
+
                                 textStyle: { color: 'White', fontSize: 10 },
                                 category: ['收入分类'],
                                 value: ['收入占比'],
-                                // tooltip: {
-
-                                // },
+                                tooltip: {
+                                    trigger: 'item',
+                                    formatter: "{a} <br/>{b}: {c} ({d}%)"
+                                },
                                 legend: {
                                     orient: 'vertical',
                                     x: 'right',
-                                    data: ['收入分类'],
+                                    //data: ['收入分类'],
                                     textStyle: { color: 'White', fontSize: 10 }
                                 },
 
@@ -468,22 +434,18 @@ module.exports = {
                                         label: {
                                             normal: {
                                                 show: false,
-                                                position: 'center'
+                                                position: 'center',
+                                                textStyle: { fontSize: '12' }
+                                                //}
                                             },
                                             emphasis: {
                                                 show: true,
-                                                textStyle: {
-                                                    fontSize: '30',
-                                                    fontWeight: 'bold'
-                                                }
+                                                textStyle: { fontSize: '12' }
                                             }
                                         },
                                         labelLine: {
-                                            normal: {
-                                                show: false
-                                            }
-                                        },
-                                        data: ['收入占比']
+                                            normal: { show: false }
+                                        }
                                     }
                                 ]
                             }
@@ -547,7 +509,7 @@ module.exports = {
                         //客服工单：完成率
                         {
                             Class: 'HomeBox',
-                            //url: 'chart/6',
+                            url: 'chart/9',
                             padding: '10 0',
                             layout: {
                                 type: 'table',
@@ -580,7 +542,7 @@ module.exports = {
                         //客服工单：满意率
                         {
                             Class: 'HomeBox',
-                            //url: 'chart/6',
+                            url: 'chart/8',
                             padding: '10 0',
                             layout: {
                                 type: 'table',
