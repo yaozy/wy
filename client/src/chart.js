@@ -293,6 +293,7 @@ flyingon.widget({
             );
 
 
+            var gridclumns = [];
 
             var chartGrid = dialog.findById('user-grid')[0];
             var chartDataset = new flyingon.DataSet();
@@ -303,6 +304,9 @@ flyingon.widget({
             //传入图表ID，返回两个结果集，A、表格列；B、表格数据；
             flyingon.toast({ text: '正在加载数据，请稍候……', time: 60000, loading: true });
             flyingon.http.get('charttbstru/' + chartid).json(function (result) {
+
+
+                gridclumns = result[0].columns;
 
                 chartGrid.columns(result[0].columns);
                 table = result[0].table;
@@ -411,7 +415,7 @@ flyingon.widget({
             dialog.findByType('File').on('change', function (event) {
 
                 flyingon.importXlsx(event.dom.files[0], function (data) {
-                   
+
                     debugger
 
                 });
@@ -423,13 +427,18 @@ flyingon.widget({
                 var data = [],
                     ds = chartDataset;
 
-                for (var i = ds.length; i--;)
-                {
+                debugger;
+
+               // gridclumns
+
+                for (var i = ds.length; i--;) {
                     data[i] = ds[i].data;
                 };
 
-                 //alert(chartGrid.columns[0].title);
-                 //alert(chartGrid.rows['orgcode']);
+
+
+                //alert(chartGrid.columns[0].title);
+                //alert(chartGrid.rows['orgcode']);
 
                 // chartDataset
                 // var outdata = [{ a: 1, b: 2 }, { a: 11, b: 22 }];
@@ -485,7 +494,7 @@ flyingon.widget({
                     var caption, fldName;
                     caption = '图表配置';
                     fldName = 'chartjson';
-                    
+
                     var dialog = window.dialog = new flyingon.Dialog();
 
                     // dialog.resizable(true);
@@ -604,7 +613,7 @@ flyingon.widget({
                     //memo.height(598);
 
                     editor = CodeMirror.fromTextArea(memo, {
-        
+
                         mode: 'javascript',     // 编辑器语言
                         lineNumbers: true,
                         indentUnit: 4,          // 缩进单位
@@ -613,7 +622,7 @@ flyingon.widget({
                         matchBrackets: true,    // 括号匹配
                     });
 
-                    editor.setSize('100%','100%');
+                    editor.setSize('100%', '100%');
 
                 }
                 else {
