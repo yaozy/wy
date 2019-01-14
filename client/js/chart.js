@@ -65,6 +65,29 @@ flyingon.Control.extend('HomeChart', function () {
     }
 
 
+    function fieldMaps(data, category, value) {
+
+        var array = [];
+
+        if (category instanceof Array)
+        {
+            category = category[0];
+        }
+
+        if (value instanceof Array)
+        {
+            value = value[0];
+        }
+
+        for (var i = data.length; i--;)
+        {
+            array[i] = { name: data[i][category], value: data[i][value] };
+        }
+
+        return array;
+    }
+
+
     this.setData = function (dataset) {
 
         var template = this.template,
@@ -103,7 +126,14 @@ flyingon.Control.extend('HomeChart', function () {
 
             for (var i = any.length; i--;)
             {
-                any[i].data = fieldValues(data, any[i].name);
+                if (any[i].type === 'pie')
+                {
+                    any[i].data = fieldMaps(data, template.category, template.value);
+                }
+                else
+                {
+                    any[i].data = fieldValues(data, any[i].name);
+                }
             }
         }
 
