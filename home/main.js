@@ -2,17 +2,18 @@ module.exports = {
     dataset: {
         //-- 公司总览
         gszl: `select 
-                (select count(1) from orginfo where orgcode in (select orgcode from orginfo where isuse=1 and citypath like '江苏/南京市')) as '物业项目数',
-                round(sum(feerec) / 10000,2) as '总应收(万元)',
-                round(sum(feepaid) / 10000,2) as '总已收(万元)',
-                round(sum(feerec) / 10000,2) as '总欠收(万元)'
+                (select count(1) from orginfo where orgcode in (select orgcode from orginfo where isuse=1 and citypath like '江苏/南京市')) as '项目数',
+                round(sum(feerec) / 10000,2) as '总应收',
+                round(sum(feepaid) / 10000,2) as '总已收',
+                round(sum(feerec) / 10000,2) as '总欠收'
             from t_hp_feetrend
             where orgcode in (select orgcode from orginfo where isuse=1 and citypath like '江苏/南京市')`,
 
 
         //-- 出租率
         czl: `select 
-                concat(cast(round(d1.arearent*100.00 / d1.areatotal,2) as CHAR),'%') as '出租率' ,
+                '出租',
+                round(d1.arearent*100.00 / d1.areatotal,2) as '出租率' ,
                 d1.arearent as '出租面积'
             from (select  
                             sum(areatotal) as areatotal, 
@@ -217,11 +218,12 @@ module.exports = {
 
                 },
 
+
                 //合同平均单价和租金预测分析
                 {
                     Class: 'ChartPanel',
                     title: '合同平均单价和租金预测分析',
-                     url: 'chart/10',
+                    url: 'chart/10',
                     children: [
                         {
                             Class: 'HomeChart',
@@ -235,13 +237,16 @@ module.exports = {
                                 value: ['月租金预测', '合同平均单价'],
                                 legend: {
                                     data: ['月租金预测', '合同平均单价'],
-                                    textStyle: { color: 'White', fontSize: 10 }
+                                    textStyle: { color: 'White', fontSize: '10' }
                                 },
                                 tooltip: {},
-                                xAxis: { type: 'category' },
+                                xAxis: {
+                                    type: 'category',
+                                    axisLabel: { interval: 0, rotate: 40, textStyle: { fontFamily: 'iconfont', color: 'White', fontSize: 10 } }
+                                },
                                 yAxis: [
-                                    { name: '万元', type: 'value' },
-                                    { name: '元/m2', type: 'value', position: 'right' }
+                                    { name: '万元', type: 'value', axisLabel: { textStyle: { fontFamily: 'iconfont', color: 'White', fontSize: 10 } } },
+                                    { name: '元/m2', type: 'value', position: 'right', axisLabel: { textStyle: { fontFamily: 'iconfont', color: 'White', fontSize: 10 } } }
                                 ],
                                 series: [
                                     { name: '月租金预测', type: 'bar', barWidth: 8, itemStyle: { normal: { color: '#008B8B' } } },
@@ -269,12 +274,14 @@ module.exports = {
                                 value: ['占比'],
                                 tooltip: {
                                     trigger: 'item',
-                                    formatter: "{a} <br/>{b}: {c} ({d}%)"
+                                    formatter: "{a} <br/>{b}: {c} ({d}%)",
+                                    textStyle: { color: 'White', fontSize: 10 }
                                 },
                                 legend: {
+                                    type: 'scroll',
                                     orient: 'vertical',
-                                    x: 'right',
-                                    data: ['物业分类'],
+                                    x2: '5%',
+                                    y: '8',
                                     textStyle: { color: 'White', fontSize: 10 }
                                 },
 
@@ -282,22 +289,23 @@ module.exports = {
                                     {
                                         name: '占比',
                                         type: 'pie',
-                                        radius: ['50%', '70%'],
-                                        avoidLabelOverlap: false,
+                                        // radius: ['40%', '70%'],
+                                        center: ['30%', '50%'],
+                                        avoidLabelOverlap: true,
                                         label: {
                                             normal: {
-                                                show: false,
-                                                position: 'center',
-                                                textStyle: { fontSize: '12' }
-                                                //}
+                                                show: true,
+                                                //position: 'center',
+                                                formatter: '{d}%',
+                                                textStyle: { fontSize: '10' }
                                             },
                                             emphasis: {
                                                 show: true,
-                                                textStyle: { fontSize: '12' }
+                                                textStyle: { fontSize: '10' }
                                             }
                                         },
                                         labelLine: {
-                                            normal: { show: false }
+                                            normal: { show: true, length: 2, length2: 4 }
                                         }
                                     }
                                 ]
@@ -338,17 +346,14 @@ module.exports = {
                                 category: ['月份'],
                                 value: ['应收', '已收', '欠收'],
                                 legend: {
-                                    data: ['应收', '已收', '欠收'],
+                                    //data: ['应收', '已收', '欠收'],
                                     right: '10%',
                                     textStyle: { color: 'White', fontSize: 10 },
                                 },
                                 tooltip: {},
-                                xAxis: {
-                                    type: 'category',
-                                    nameTextStyle: { color: 'White', fontSize: 5 }
-                                },
+                                xAxis: { type: 'category', axisLabel: { textStyle: { fontFamily: 'iconfont', color: 'White', fontSize: 10 } } },
                                 yAxis: [
-                                    { name: '万元', type: 'value', nameTextStyle: { color: 'White', fontSize: 10 } }
+                                    { name: '万元', type: 'value', axisLabel: { textStyle: { fontFamily: 'iconfont', color: 'White', fontSize: 10 } } }
                                 ],
                                 series: [
 
@@ -388,8 +393,8 @@ module.exports = {
                                 //     }
                                 // },
                                 tooltip: {},
-                                xAxis: { name: '%', type: 'value' },
-                                yAxis: { type: 'category' },
+                                xAxis: { name: '%', type: 'value', axisLabel: { textStyle: { fontFamily: 'iconfont', color: 'White', fontSize: 10 } } },
+                                yAxis: { type: 'category', axisLabel: { textStyle: { fontFamily: 'iconfont', color: 'White', fontSize: 10 } } },
                                 series: [
                                     { name: '收缴率', type: 'bar', barWidth: 8, itemStyle: { normal: { color: '#1E90FF' } } }
                                 ]
@@ -416,12 +421,14 @@ module.exports = {
                                 value: ['收入占比'],
                                 tooltip: {
                                     trigger: 'item',
-                                    formatter: "{a} <br/>{b}: {c} ({d}%)"
+                                    formatter: "{a} <br/>{b}: {c} ({d}%)",
+                                    textStyle: { color: 'White', fontSize: 10 }
                                 },
                                 legend: {
+                                    type: 'scroll',
                                     orient: 'vertical',
-                                    x: 'right',
-                                    //data: ['收入分类'],
+                                    x2: '1%',
+                                    y: '8',
                                     textStyle: { color: 'White', fontSize: 10 }
                                 },
 
@@ -429,22 +436,24 @@ module.exports = {
                                     {
                                         name: '收入占比',
                                         type: 'pie',
-                                        radius: ['50%', '70%'],
-                                        avoidLabelOverlap: false,
+                                        radius: ['40%', '70%'],
+                                        center: ['25%', '50%'],
+                                        avoidLabelOverlap: true,
                                         label: {
                                             normal: {
-                                                show: false,
-                                                position: 'center',
-                                                textStyle: { fontSize: '12' }
-                                                //}
+                                                show: true,
+                                                //position: 'center',
+                                                formatter: '{d}%',
+                                                textStyle: { fontSize: '10' }
+
                                             },
                                             emphasis: {
                                                 show: true,
-                                                textStyle: { fontSize: '12' }
+                                                textStyle: { fontSize: '10' }
                                             }
                                         },
                                         labelLine: {
-                                            normal: { show: false }
+                                            normal: { show: true, length: 2, length2: 4 }
                                         }
                                     }
                                 ]
@@ -485,7 +494,7 @@ module.exports = {
                             children: [
                                 {
                                     Class: 'HomeIcon',
-                                    icon: 'icon-charttype',
+                                    icon: 'icon-cst-total',
                                     height: 30,
                                     alignY: 'middle',
                                     color: 'skyblue'
@@ -518,7 +527,7 @@ module.exports = {
                             children: [
                                 {
                                     Class: 'HomeIcon',
-                                    icon: 'icon-charttype',
+                                    icon: 'icon-cst-finish',
                                     height: 30,
                                     alignY: 'middle',
                                     color: 'skyblue'
@@ -551,7 +560,7 @@ module.exports = {
                             children: [
                                 {
                                     Class: 'HomeIcon',
-                                    icon: 'icon-charttype',
+                                    icon: 'icon-cst-agree',
                                     //height: 30,
                                     alignY: 'middle',
                                     color: 'skyblue'
@@ -584,7 +593,7 @@ module.exports = {
                             children: [
                                 {
                                     Class: 'HomeIcon',
-                                    icon: 'icon-charttype',
+                                    icon: 'icon-cst-noagree',
                                     //height: 30,
                                     alignY: 'middle',
                                     color: 'skyblue'
@@ -608,9 +617,176 @@ module.exports = {
                     ]
                 },
                 {
-                    Class: 'HomeMap',
-                    dock: 'fill'
+                    Class: 'Panel',
+                    dock: 'fill',
+                    border: 1,
+                    padding: 5,
+                    layout: 'dock',
+                    children: [
+                        {
+                            Class: 'Panel',
+                            dock: 'top',
+                            height: 80,
+                            padding: '2 20',
+                            layout: {
+                                type: 'table',
+                                spacingX: 10,
+                                data: '*[* * * *]'
+                            },
+                            children: [
+                                //公司总览：项目数
+                                {
+                                    Class: 'HomeBox',
+                                    //url: 'chart/6',
+                                    padding: '10 0',
+                                    layout: {
+                                        type: 'table',
+                                        data: '*[40 *[* *]]'
+                                    },
+                                    children: [
+                                        {
+                                            Class: 'HomeIcon',
+                                            icon: 'icon-org',
+                                            height: 30,
+                                            alignY: 'middle',
+                                            color: 'skyblue'
+                                        },
+                                        {
+                                            Class: 'HomeText',
+                                            text: '物业项目数',
+                                            fontSize: '16px',
+                                            color: 'DarkGray'
+                                        },
+                                        {
+                                            Class: 'HomeText',
+                                            table: 'gszl',
+                                            field: '项目数',
+                                            textShadow: '0 0 4px red',
+                                            fontSize: '25px',
+                                            color: 'CornflowerBlue',
+                                            align:'center',
+                                            fontFamily: 'digital'
+                                        }
+                                    ]
+                                },
+                                //公司总览：总应收
+                                {
+                                    Class: 'HomeBox',
+                                    //url: 'chart/9',
+                                    padding: '10 0',
+                                    layout: {
+                                        type: 'table',
+                                        data: '*[40 *[* *]]'
+                                    },
+                                    children: [
+                                        {
+                                            Class: 'HomeIcon',
+                                            icon: 'icon-money-z',
+                                            height: 30,
+                                            alignY: 'middle',
+                                            color: 'skyblue'
+                                        },
+                                        {
+                                            Class: 'HomeText',
+                                            text: '总应收(万元)',
+                                            fontSize: '16px',
+                                            color: 'DarkGray'
+                                        },
+                                        {
+                                            Class: 'HomeText',
+                                            table: 'gszl',
+                                            field: '总应收',
+                                            textShadow: '0 0 4px red',
+                                            fontSize: '25px',
+                                            color: 'CornflowerBlue',
+                                            align:'center',
+                                            fontFamily: 'digital'
+                                        }
+                                    ]
+                                },
+                                //公司总览：总已收
+                                {
+                                    Class: 'HomeBox',
+                                    url: 'chart/8',
+                                    padding: '10 0',
+                                    layout: {
+                                        type: 'table',
+                                        data: '*[40 *[* *]]'
+                                    },
+                                    children: [
+                                        {
+                                            Class: 'HomeIcon',
+                                            icon: 'icon-money-s',
+                                            //height: 30,
+                                            alignY: 'middle',
+                                            color: 'skyblue'
+                                        },
+                                        {
+                                            Class: 'HomeText',
+                                            text: '总已收(万元)',
+                                            fontSize: '16px',
+                                            color: 'DarkGray'
+                                        },
+                                        {
+                                            Class: 'HomeText',
+                                            table: 'gszl',
+                                            field: '总已收',
+                                            textShadow: '0 0 4px red',
+                                            fontSize: '25px',
+                                            color: 'CornflowerBlue',
+                                            align:'center',
+                                            fontFamily: 'digital'
+                                        }
+                                    ]
+                                },
+                                //公司总览：总欠收
+                                {
+                                    Class: 'HomeBox',
+                                    //url: 'chart/6',
+                                    padding: '10 0',
+                                    layout: {
+                                        type: 'table',
+                                        data: '*[40 *[* *]]'
+                                    },
+                                    children: [
+                                        {
+                                            Class: 'HomeIcon',
+                                            icon: 'icon-money-q',
+                                            //height: 30,
+                                            alignY: 'middle',
+                                            color: 'skyblue'
+                                        },
+                                        {
+                                            Class: 'HomeText',
+                                            text: '总欠收(万元)',
+                                            fontSize: '16px',
+                                            color: 'DarkGray'
+                                        },
+                                        {
+                                            Class: 'HomeText',
+                                            table: 'gszl',
+                                            field: '总欠收',
+                                            textShadow: '0 0 4px red',
+                                            fontSize: '25px',
+                                            color: 'CornflowerBlue',
+                                            align:'center',
+                                            fontFamily: 'digital'
+                                        }
+                                    ]
+                                }
+                            ]
+                        },
+                        {
+                            Class: 'HomeMap',
+                            dock: 'fill'
+
+                            //是否显示地图外框线
+                            //border: 0
+                        }
+                    ]
                 }
+
+
             ]
         }
     ]
