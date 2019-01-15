@@ -9,7 +9,7 @@
 
 
 //启用严格模式
-'use strict';
+// 'use strict';
 
 
 
@@ -20655,7 +20655,7 @@ flyingon.TextButton.extend('ComboBox', function (base) {
 
 
     
-    var combobox, cache;
+    var combobox;
 
 
 
@@ -20692,17 +20692,22 @@ flyingon.TextButton.extend('ComboBox', function (base) {
 
 
 
-    //弹出日历窗口
     this.popup = this.__on_click = function () {
 
         var popup = this.__get_popup(),
-            listbox = cache || init_listbox(),
+            listbox = init_listbox(),
             data = this.__data_list,
             storage = this.__storage || this.__defaults,
             columns = storage.columns,
             height = storage.itemHeight,
             length;
 
+        if (this.onopening)
+        {
+            this.onopening(listbox);
+            data = this.__data_list;
+        }
+    
         listbox.border(0)
             .checked(storage.checked)
             .columns(columns)
@@ -20732,6 +20737,10 @@ flyingon.TextButton.extend('ComboBox', function (base) {
 
             height *= length;
         }
+        else if (data)
+        {
+            height *= data.length;
+        }
 
         combobox = this;
         listbox.height(height + 8);
@@ -20739,13 +20748,13 @@ flyingon.TextButton.extend('ComboBox', function (base) {
         popup.push(listbox);
         popup.show(this);
 
-        this.trigger('popup');
+        this.trigger('opened');
     };
 
 
     function init_listbox() {
 
-        return cache = new flyingon.ListBox().on('change', function (e) {
+        return new flyingon.ListBox().on('change', function (e) {
             
             var target = combobox;
 
@@ -20763,138 +20772,6 @@ flyingon.TextButton.extend('ComboBox', function (base) {
 
 
 }).register();
-
-
-
-
-flyingon.fragment('f-ComboTree', function () {
-
-
-
-    //下拉框宽度
-    this['popup-width'] = this.defineProperty('popupWidth', '');
-
-
-    //下拉框高度
-    this['popup-height'] = this.defineProperty('popupHeight', '');
-
-
-    //树风格
-    //default   默认风格
-    //blue      蓝色风格
-    //plus      加减风格
-    //line      线条风格
-    this.defineProperty('theme', '');
-
-
-    //是否显示检查框
-    this.defineProperty('checked', false);
-
-
-    //是否显示图标
-    this.defineProperty('icon', true);
-
-
-});
-
-
-
-
-flyingon.TextButton.extend('ComboTree', function (base) {
-
-
-    
-    var tree, cache; 
-
-
-
-    this.__type = 'f-combotree-button';
-
-
-
-    //扩展下拉框定义
-    flyingon.fragment('f-ComboTree', this);
-
-
-
-    //下拉数据
-    this.defineProperty('data', null, { 
-        
-        set: function (name, value) {
-
-            //转换成flyingon.DataList
-            flyingon.DataList.create(value, this.__set_data, this);
-        }
-    });
-
-
-
-    //重载获取文本方法
-    this.text = this.__list_text;
-
-
-    //重载是否多选方法
-    this.__multi = function (storage) {
-
-        return storage.checked;
-    };
-
-
-
-    //弹出日历窗口
-    this.popup = this.__on_click = function () {
-
-        var popup = this.__get_popup(),
-            tree = cache || init_tree(),
-            data = this.__data_list,
-            storage = this.__storage || this.__defaults;
-
-        tree.border(0)
-            .theme(storage.theme)
-            .checked(storage.checked)
-            .icon(storage.icon)
-            .width(storage.popupWidth)
-            .height(storage.popupHeight);
-
-        tree.splice(0);
-        
-        if (data)
-        {
-            tree.push.apply(tree, data);
-        }
-       
-        popup.push(tree);
-        popup.show(this);
-
-        this.trigger('popup');
-    };
-
-
-    function init_tree() {
-
-        return cache = new flyingon.Tree().on('change', function (e) {
-            
-            var target = tree;
-
-            target.value(e.value);
-
-            if (target.checked())
-            {
-                target.__get_popup().close();
-            }
-
-            target.trigger('change', 'value', e.value);
-        });
-    };
-
-
-
-}).register();
-
-
-
-
-
 
 
 
@@ -22368,16 +22245,6 @@ flyingon.Control.extend('Tree', function (base) {
     };
 
 
-    // 同步表格列处理(新创建的控件需要赋值,变更时需同步以前创建的控件值)
-    this.__sync_column = function (name, value) {
-
-        var storage = this.__storage2 || (this.__storage2 = flyingon.create(null));
-
-        storage[name] = value;
-        this.view && this.grid.__sync_value(name, value);
-    };
-
-
 
     // 绑定表格列渲染器
     flyingon.renderer.bind(this, 'GridColumn');
@@ -22566,34 +22433,22 @@ flyingon.GridColumn.extend(function (base) {
 
 
     // 是否可输入
-    this.defineProperty('inputable', false, { 
-        
-        set: this.__sync_column
-    });
+    this.defineProperty('inputable', false);
 
 
     // 按钮图标
-    this.defineProperty('icon', '', {
-        
-        set: this.__sync_column
-    });
+    this.defineProperty('icon', '');
 
 
     // 按钮显示模式
     // show      总是显示
     // none      不显示
     // hover     鼠标划过时显示
-    this.defineProperty('button', 'show', {
-        
-        set: this.__sync_column
-    });
+    this.defineProperty('button', 'show');
 
 
     // 按钮大小
-    this['button-size'] = this.defineProperty('buttonSize', 16, {
-        
-        set: this.__sync_column
-    });
+    this['button-size'] = this.defineProperty('buttonSize', 16);
 
 
 
@@ -22638,7 +22493,7 @@ flyingon.GridColumn.extend(function (base) {
     this.defaultValue('align', 'right');
 
 
-    flyingon.fragment('f-Number', this, this.__sync_column);
+    flyingon.fragment('f-Number', this);
 
 
     // 创建单元格控件
@@ -22680,7 +22535,7 @@ flyingon.GridColumn.extend(function (base) {
 
 
     // 扩展下拉框定义
-    flyingon.fragment('f-ComboBox', this, this.__sync_column);
+    flyingon.fragment('f-ComboBox', this);
 
 
     // 下拉数据
@@ -22696,8 +22551,7 @@ flyingon.GridColumn.extend(function (base) {
 
     function set_items(list) {
 
-        this.__data_list = list;
-        this.view && this.grid.__sync_value('items', list);        
+        this.__data_list = list;     
     };
 
 
@@ -22711,6 +22565,8 @@ flyingon.GridColumn.extend(function (base) {
         {
             control.items(any);
         }
+        
+        control.onopening = this.onopening;
         
         if (any = this.__storage2)
         {
@@ -24434,13 +24290,6 @@ flyingon.Control.extend('Grid', function (base) {
                 any.set(name, (control.value || control.text).call(control));
             }
         }
-    };
-
-
-    // 同步控件属性值
-    this.__sync_value = function (name, value) {
-
-
     };
 
 
