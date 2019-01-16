@@ -293,8 +293,6 @@ flyingon.widget({
             );
 
 
-            var gridclumns = [];
-
             var chartGrid = dialog.findById('user-grid')[0];
             var chartDataset = new flyingon.DataSet();
             chartGrid.dataset(chartDataset);
@@ -305,8 +303,6 @@ flyingon.widget({
             flyingon.toast({ text: '正在加载数据，请稍候……', time: 60000, loading: true });
             flyingon.http.get('charttbstru/' + chartid).json(function (result) {
 
-
-                gridclumns = result[0].columns;
 
                 chartGrid.columns(result[0].columns);
                 table = result[0].table;
@@ -425,25 +421,47 @@ flyingon.widget({
             function fixoutClick() {
 
                 var data = [],
-                    ds = chartDataset;
+                    ds = chartDataset,
+                    gd = chartGrid;
 
-                debugger;
+                if (ds.length > 0) {
 
-               // gridclumns
+                    flyingon.toast({ text: '正在保存数据，请稍候……', time: 60000, loading: true });
 
-                for (var i = ds.length; i--;) {
-                    data[i] = ds[i].data;
+                    var arrClumns = [],
+                        arrRows = [];
+
+                    //先取表格列名
+                    arrClumns.push('序号');
+                    for (var k = 2; k < gd.columns().length; k++) {
+                        arrClumns.push(gd.columns(k).title());
+                    };
+
+
+                    //循环表格行，替换 数据对像的 KEY 名
+                    for (var i = ds.length; i--;) {
+
+                        var objRows = {};
+
+                        //获取对象数据的值
+                        arrRows = Object.values(ds[i].data);
+                        for (var j = 0; j <= arrRows.length - 1; j++) {
+                            objRows[arrClumns[j]] = arrRows[j];
+                        }
+
+                        data[i] = objRows;
+                    };
+
+                    flyingon.exportToXlsx(chartname, data);
+                    flyingon.toast('数据导出成功！');
+
+                } else {
+                    flyingon.toast('没有数据可导出！');
                 };
 
 
-
-                //alert(chartGrid.columns[0].title);
-                //alert(chartGrid.rows['orgcode']);
-
-                // chartDataset
                 // var outdata = [{ a: 1, b: 2 }, { a: 11, b: 22 }];
-
-                flyingon.exportToXlsx(chartname, data);
+                //flyingon.exportToXlsx(chartname, outdata);
 
             };
 
