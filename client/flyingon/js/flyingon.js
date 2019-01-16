@@ -12452,7 +12452,7 @@ flyingon.renderer('CheckBox', function (base) {
         
         render.call(this, writer, control);
         
-        writer.push('><input type="checkbox" class="f-checkbox-input" onchange="flyingon.CheckBox.onchange.call(this)"/></span>');
+        writer.push('><input type="checkbox" class="f-checkbox-input" /></span>');
     };
 
 
@@ -12597,8 +12597,7 @@ flyingon.renderer('TextBox', function (base) {
 
     this.value = function (control, view) {
 
-        var storage = control.__storage,
-            any;
+        var any;
 
         if ((any = control.__storage) && !any.value && (any = any.placeholder))
         {
@@ -12817,7 +12816,6 @@ flyingon.renderer('TextButton', 'TextBox', function (base) {
             }
         }
     };
-
 
 
     this.inputable = function (control, view, value) {
@@ -20413,15 +20411,15 @@ flyingon.Control.extend('TextButton', function (base) {
 
         if (value === void 0)
         {
-            var list = this.__data_list;
+            var list = this.__data_list,
+                storage = this.__storage || this.__defaults;
 
             if (list)
             {
-                var storage = this.__storage || this.__defaults;
                 return list.text(storage.value, this.__multi(storage) ? storage.separator || ',' : '');
             }
 
-            return '';
+            return storage.value;
         }
 
         this.value(value);
@@ -20704,7 +20702,7 @@ flyingon.TextButton.extend('ComboBox', function (base) {
 
         if (this.onopening)
         {
-            this.onopening(listbox);
+            this.onopening();
             data = this.__data_list;
         }
     
@@ -22246,6 +22244,13 @@ flyingon.Control.extend('Tree', function (base) {
 
 
 
+    //同步表格列处理(新创建的控件需要赋值,变更时需同步以前创建的控件值)
+    this.__sync_column = function (name, value) {
+
+        (this.__storage2 || (this.__storage2 = flyingon.create(null)))[name] = value;
+    };
+
+
     // 绑定表格列渲染器
     flyingon.renderer.bind(this, 'GridColumn');
 
@@ -22433,22 +22438,34 @@ flyingon.GridColumn.extend(function (base) {
 
 
     // 是否可输入
-    this.defineProperty('inputable', false);
+    this.defineProperty('inputable', false, { 
+        
+        set: this.__sync_column
+    });
 
 
     // 按钮图标
-    this.defineProperty('icon', '');
+    this.defineProperty('icon', '', { 
+        
+        set: this.__sync_column
+    });
 
 
     // 按钮显示模式
     // show      总是显示
     // none      不显示
     // hover     鼠标划过时显示
-    this.defineProperty('button', 'show');
+    this.defineProperty('button', 'show', { 
+        
+        set: this.__sync_column
+    });
 
 
     // 按钮大小
-    this['button-size'] = this.defineProperty('buttonSize', 16);
+    this['button-size'] = this.defineProperty('buttonSize', 16, { 
+        
+        set: this.__sync_column
+    });
 
 
 
@@ -22493,7 +22510,7 @@ flyingon.GridColumn.extend(function (base) {
     this.defaultValue('align', 'right');
 
 
-    flyingon.fragment('f-Number', this);
+    flyingon.fragment('f-Number', this, this.__sync_column);
 
 
     // 创建单元格控件
@@ -22535,7 +22552,7 @@ flyingon.GridColumn.extend(function (base) {
 
 
     // 扩展下拉框定义
-    flyingon.fragment('f-ComboBox', this);
+    flyingon.fragment('f-ComboBox', this, this.__sync_column);
 
 
     // 下拉数据
