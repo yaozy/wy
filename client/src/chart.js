@@ -426,7 +426,7 @@ flyingon.widget({
 
                 if (ds.length > 0) {
 
-                    flyingon.toast({ text: '正在保存数据，请稍候……', time: 60000, loading: true });
+                    //flyingon.toast({ text: '正在导出数据，请稍候……', time: 60000, loading: true });
 
                     var arrClumns = [],
                         arrRows = [];
@@ -452,8 +452,13 @@ flyingon.widget({
                         data[i] = objRows;
                     };
 
+                    // flyingon.exportToXlsx = function (chartname, data) {
+                    //     flyingon.toast('数据导出成功！');
+                    // };
+
                     flyingon.exportToXlsx(chartname, data);
-                    flyingon.toast('数据导出成功！');
+                    //flyingon.toast('数据导出成功！');
+
 
                 } else {
                     flyingon.toast('没有数据可导出！');

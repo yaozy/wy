@@ -11,7 +11,7 @@ flyingon.renderer('DigitalTime', function (base) {
     this.render = function (writer, control, render) {
 
         writer.push('<div');
-        
+
         render.call(this, writer, control);
 
         writer.push('></div>');
@@ -56,8 +56,7 @@ flyingon.Control.extend('HomeChart', function () {
 
         var array = [];
 
-        for (var i = data.length; i--;)
-        {
+        for (var i = data.length; i--;) {
             array[i] = data[i][field];
         }
 
@@ -69,18 +68,15 @@ flyingon.Control.extend('HomeChart', function () {
 
         var array = [];
 
-        if (category instanceof Array)
-        {
+        if (category instanceof Array) {
             category = category[0];
         }
 
-        if (value instanceof Array)
-        {
+        if (value instanceof Array) {
             value = value[0];
         }
 
-        for (var i = data.length; i--;)
-        {
+        for (var i = data.length; i--;) {
             array[i] = { name: data[i][category], value: data[i][value] };
         }
 
@@ -94,44 +90,35 @@ flyingon.Control.extend('HomeChart', function () {
             data = dataset[this.table],
             any;
 
-        if (!data)
-        {
+        if (!data) {
             flyingon.showMessage('图表配置错误', 'table "' + this.table + '"不存在!', 'information', 'ok');
             return;
         }
 
-        if ((any = template.xAxis) && any.type === 'category')
-        {
+        if ((any = template.xAxis) && any.type === 'category') {
             any.data = fieldValues(data, template.category);
         }
-        else if ((any = template.yAxis) && any.type === 'category')
-        {
+        else if ((any = template.yAxis) && any.type === 'category') {
             any.data = fieldValues(data, template.category);
         }
 
-        if (any = template.series)
-        {
+        if (any = template.series) {
             var valueFields = template.valueFields;
 
-            if (!(any instanceof Array))
-            {
+            if (!(any instanceof Array)) {
                 any = template.series = [];
 
-                for (var i = valueFields.length; i--;)
-                {
+                for (var i = valueFields.length; i--;) {
                     any[i] = Object.assign({}, any);
                     any[i].name = valueFields[i];
                 }
             }
 
-            for (var i = any.length; i--;)
-            {
-                if (any[i].type === 'pie')
-                {
+            for (var i = any.length; i--;) {
+                if (any[i].type === 'pie') {
                     any[i].data = fieldMaps(data, template.category, template.value);
                 }
-                else
-                {
+                else {
                     any[i].data = fieldValues(data, any[i].name);
                 }
             }
@@ -147,8 +134,7 @@ flyingon.Control.extend('HomeChart', function () {
 
     this.refreshChart = function () {
 
-        if (this.chart)
-        {
+        if (this.chart) {
             this.chart.resize();
         }
     }
@@ -178,16 +164,16 @@ flyingon.Control.extend('HomeIcon', function () {
 flyingon.renderer('HomeIcon', function (base) {
 
 
-    
+
     this.lineHeight = 1;
 
 
     this.render = function (writer, control, render) {
 
         writer.push('<span');
-        
+
         render.call(this, writer, control);
-        
+
         writer.push('></span>');
     };
 
@@ -211,7 +197,7 @@ flyingon.Control.extend('HomeText', function () {
     });
 
 
-    
+
     this.defineProperty('table', '');
 
 
@@ -223,8 +209,7 @@ flyingon.Control.extend('HomeText', function () {
         var table = this.table(),
             field = this.field();
 
-        if (table && field && (table = dataset[table]))
-        {
+        if (table && field && (table = dataset[table])) {
             this.text(table[0][field]);
         }
     }
@@ -245,9 +230,9 @@ flyingon.renderer('HomeText', function (base) {
     this.render = function (writer, control, render) {
 
         writer.push('<span');
-        
+
         render.call(this, writer, control);
-        
+
         writer.push('></span>');
     };
 
@@ -280,7 +265,7 @@ flyingon.renderer('HomeBox', 'Panel', function (base) {
     this.render = function (writer, control, render) {
 
         writer.push('<div');
-        
+
         render.call(this, writer, control);
 
         writer.push('>',
@@ -290,8 +275,7 @@ flyingon.renderer('HomeBox', 'Panel', function (base) {
             '<span class="f-homebox-corner4"></span>',
             '<div class="f-homebox-body">');
 
-        if (control.length > 0 && control.__visible)
-        {
+        if (control.length > 0 && control.__visible) {
             control.__content_render = true;
             this.__render_children(writer, control, control, 0, control.length);
         }
@@ -315,11 +299,10 @@ flyingon.Control.extend('HomeMap', function () {
 
 
     var maps = function (keys) {
-        
+
         var data = [];
 
-        for (var name in keys)
-        {
+        for (var name in keys) {
             data.push({
                 name: name,
                 file: 'map/' + keys[name] + '.json'
@@ -331,11 +314,11 @@ flyingon.Control.extend('HomeMap', function () {
     }({
         '北京': 'province/beijing',
         '北京市': 'city/110100',
-    
-        '天津': 'province/tianjin',  
+
+        '天津': 'province/tianjin',
         '天津市': 'city/120100',
-    
-        '河北': 'province/hebei',   
+
+        '河北': 'province/hebei',
         '石家庄市': 'city/130100',
         '唐山市': 'city/130200',
         '秦皇岛市': 'city/130300',
@@ -347,8 +330,8 @@ flyingon.Control.extend('HomeMap', function () {
         '沧州市': 'city/130900',
         '廊坊市': 'city/131000',
         '衡水市': 'city/131100',
-    
-        '山西': 'province/shanxi',   
+
+        '山西': 'province/shanxi',
         '太原市': 'city/140100',
         '大同市': 'city/140200',
         '阳泉市': 'city/140300',
@@ -360,8 +343,8 @@ flyingon.Control.extend('HomeMap', function () {
         '忻州市': 'city/140900',
         '临汾市': 'city/141000',
         '吕梁市': 'city/141100',
-    
-        '内蒙古': 'province/neimenggu',   
+
+        '内蒙古': 'province/neimenggu',
         '呼和浩特市': 'city/150100',
         '包头市': 'city/150200',
         '乌海市': 'city/150300',
@@ -374,8 +357,8 @@ flyingon.Control.extend('HomeMap', function () {
         '兴安盟': 'city/152200',
         '锡林郭勒盟': 'city/152500',
         '阿拉善盟': 'city/152900',
-    
-        '辽宁': 'province/liaoning',   
+
+        '辽宁': 'province/liaoning',
         '沈阳市': 'city/210100',
         '大连市': 'city/210200',
         '鞍山市': 'city/210300',
@@ -390,8 +373,8 @@ flyingon.Control.extend('HomeMap', function () {
         '铁岭市': 'city/211200',
         '朝阳市': 'city/211300',
         '葫芦岛市': 'city/211400',
-    
-        '吉林': 'province/jilin',  
+
+        '吉林': 'province/jilin',
         '长春市': 'city/220100',
         '吉林市': 'city/220200',
         '四平市': 'city/220300',
@@ -400,9 +383,9 @@ flyingon.Control.extend('HomeMap', function () {
         '白山市': 'city/220600',
         '松原市': 'city/220700',
         '白城市': 'city/220800',
-        '延边朝鲜族自治州': 'city/222400', 
-    
-        '黑龙江': 'province/heilongjiang',   
+        '延边朝鲜族自治州': 'city/222400',
+
+        '黑龙江': 'province/heilongjiang',
         '哈尔滨市': 'city/230100',
         '齐齐哈尔市': 'city/230200',
         '鸡西市': 'city/230300',
@@ -416,12 +399,12 @@ flyingon.Control.extend('HomeMap', function () {
         '黑河市': 'city/231100',
         '绥化市': 'city/231200',
         '大兴安岭地区': 'city/232700',
-    
-        '上海': 'province/shanghai', 
+
+        '上海': 'province/shanghai',
         '上海市': 'city/310100',
-        '崇明县': 'city/310200',  
-    
-        '江苏': 'province/jiangsu',  
+        '崇明县': 'city/310200',
+
+        '江苏': 'province/jiangsu',
         '南京市': 'city/320100',
         '无锡市': 'city/320200',
         '徐州市': 'city/320300',
@@ -435,8 +418,8 @@ flyingon.Control.extend('HomeMap', function () {
         '镇江市': 'city/321100',
         '泰州市': 'city/321200',
         '宿迁市': 'city/321300',
-    
-        '浙江': 'province/zhejiang',  
+
+        '浙江': 'province/zhejiang',
         '杭州市': 'city/330100',
         '宁波市': 'city/330200',
         '温州市': 'city/330300',
@@ -448,7 +431,7 @@ flyingon.Control.extend('HomeMap', function () {
         '舟山市': 'city/330900',
         '台州市': 'city/331000',
         '丽水市': 'city/331100',
-    
+
         '安徽': 'province/anhui',
         '合肥市': 'city/340100',
         '芜湖市': 'city/340200',
@@ -466,8 +449,8 @@ flyingon.Control.extend('HomeMap', function () {
         '亳州市': 'city/341600',
         '池州市': 'city/341700',
         '宣城市': 'city/341800',
-    
-        '福建': 'province/fujian',   
+
+        '福建': 'province/fujian',
         '福州市': 'city/350100',
         '厦门市': 'city/350200',
         '莆田市': 'city/350300',
@@ -477,8 +460,8 @@ flyingon.Control.extend('HomeMap', function () {
         '南平市': 'city/350700',
         '龙岩市': 'city/350800',
         '宁德市': 'city/350900',
-    
-        '江西': 'province/jiangxi',  
+
+        '江西': 'province/jiangxi',
         '南昌市': 'city/360100',
         '景德镇市': 'city/360200',
         '萍乡市': 'city/360300',
@@ -490,8 +473,8 @@ flyingon.Control.extend('HomeMap', function () {
         '宜春市': 'city/360900',
         '抚州市': 'city/361000',
         '上饶市': 'city/361100',
-    
-        '山东': 'province/shandong', 
+
+        '山东': 'province/shandong',
         '济南市': 'city/370100',
         '青岛市': 'city/370200',
         '淄博市': 'city/370300',
@@ -508,9 +491,9 @@ flyingon.Control.extend('HomeMap', function () {
         '德州市': 'city/371400',
         '聊城市': 'city/371500',
         '滨州市': 'city/371600',
-        '菏泽市': 'city/371700',  
-    
-        '河南': 'province/henan',   
+        '菏泽市': 'city/371700',
+
+        '河南': 'province/henan',
         '郑州市': 'city/410100',
         '开封市': 'city/410200',
         '洛阳市': 'city/410300',
@@ -528,9 +511,9 @@ flyingon.Control.extend('HomeMap', function () {
         '信阳市': 'city/411500',
         '周口市': 'city/411600',
         '驻马店市': 'city/411700',
-    
-        '湖北': 'province/hubei',   
-        '湖北省直辖县市': 'city/429000',   
+
+        '湖北': 'province/hubei',
+        '湖北省直辖县市': 'city/429000',
         '武汉市': 'city/420100',
         '黄石市': 'city/420200',
         '十堰市': 'city/420300',
@@ -544,8 +527,8 @@ flyingon.Control.extend('HomeMap', function () {
         '咸宁市': 'city/421200',
         '随州市': 'city/421300',
         '恩施土家族苗族自治州': 'city/422800',
-    
-        '湖南': 'province/hunan',   
+
+        '湖南': 'province/hunan',
         '长沙市': 'city/430100',
         '株洲市': 'city/430200',
         '湘潭市': 'city/430300',
@@ -560,8 +543,8 @@ flyingon.Control.extend('HomeMap', function () {
         '怀化市': 'city/431200',
         '娄底市': 'city/431300',
         '湘西土家族苗族自治州': 'city/433100',
-    
-        '广东': 'province/guangdong',   
+
+        '广东': 'province/guangdong',
         '广州市': 'city/440100',
         '韶关市': 'city/440200',
         '深圳市': 'city/440300',
@@ -583,8 +566,8 @@ flyingon.Control.extend('HomeMap', function () {
         '潮州市': 'city/445100',
         '揭阳市': 'city/445200',
         '云浮市': 'city/445300',
-    
-        '广西': 'province/guangxi',  
+
+        '广西': 'province/guangxi',
         '南宁市': 'city/450100',
         '柳州市': 'city/450200',
         '桂林市': 'city/450300',
@@ -599,17 +582,17 @@ flyingon.Control.extend('HomeMap', function () {
         '河池市': 'city/451200',
         '来宾市': 'city/451300',
         '崇左市': 'city/451400',
-    
-        '海南': 'province/hainan',   
+
+        '海南': 'province/hainan',
         '省直辖县级行政区划': 'city/469000',
         '海口市': 'city/460100',
         '三亚市': 'city/460200',
         '三沙市': 'city/460300',
-    
-        '重庆': 'province/chongqing',   
+
+        '重庆': 'province/chongqing',
         '重庆市': 'city/500100',
-    
-        '四川': 'province/sichuan',  
+
+        '四川': 'province/sichuan',
         '成都市': 'city/510100',
         '自贡市': 'city/510300',
         '攀枝花市': 'city/510400',
@@ -631,19 +614,19 @@ flyingon.Control.extend('HomeMap', function () {
         '阿坝藏族羌族自治州': 'city/513200',
         '甘孜藏族自治州': 'city/513300',
         '凉山彝族自治州': 'city/513400',
-    
-        '贵州': 'province/guizhou',   
+
+        '贵州': 'province/guizhou',
         '贵阳市': 'city/520100',
         '六盘水市': 'city/520200',
         '遵义市': 'city/520300',
         '安顺市': 'city/520400',
-        '毕节市': 'city/520500', 
-        '铜仁市': 'city/520600',   
+        '毕节市': 'city/520500',
+        '铜仁市': 'city/520600',
         '黔西南布依族苗族自治州': 'city/522300',
         '黔东南苗族侗族自治州': 'city/522600',
         '黔南布依族苗族自治州': 'city/522700',
-      
-        '云南': 'province/yunnan',   
+
+        '云南': 'province/yunnan',
         '昆明市': 'city/530100',
         '曲靖市': 'city/530300',
         '玉溪市': 'city/530400',
@@ -660,8 +643,8 @@ flyingon.Control.extend('HomeMap', function () {
         '德宏傣族景颇族自治州': 'city/533100',
         '怒江傈僳族自治州': 'city/533300',
         '迪庆藏族自治州': 'city/533400',
-    
-        '西藏': 'province/xizang',   
+
+        '西藏': 'province/xizang',
         '拉萨市': 'city/540100',
         '昌都地区': 'city/542100',
         '山南地区': 'city/542200',
@@ -669,8 +652,8 @@ flyingon.Control.extend('HomeMap', function () {
         '那曲地区': 'city/542400',
         '阿里地区': 'city/542500',
         '林芝地区': 'city/542600',
-    
-        '陕西': 'province/shanxi1',  
+
+        '陕西': 'province/shanxi1',
         '西安市': 'city/610100',
         '铜川市': 'city/610200',
         '宝鸡市': 'city/610300',
@@ -681,8 +664,8 @@ flyingon.Control.extend('HomeMap', function () {
         '榆林市': 'city/610800',
         '安康市': 'city/610900',
         '商洛市': 'city/611000',
-    
-        '甘肃': 'province/gansu',  
+
+        '甘肃': 'province/gansu',
         '兰州市': 'city/620100',
         '嘉峪关市': 'city/620200',
         '金昌市': 'city/620300',
@@ -697,8 +680,8 @@ flyingon.Control.extend('HomeMap', function () {
         '陇南市': 'city/621200',
         '临夏回族自治州': 'city/622900',
         '甘南藏族自治州': 'city/623000',
-    
-        '青海': 'province/qinghai',   
+
+        '青海': 'province/qinghai',
         '西宁市': 'city/630100',
         '海东地区': 'city/632100',
         '海北藏族自治州': 'city/632200',
@@ -707,15 +690,15 @@ flyingon.Control.extend('HomeMap', function () {
         '果洛藏族自治州': 'city/632600',
         '玉树藏族自治州': 'city/632700',
         '海西蒙古族藏族自治州': 'city/632800',
-    
-        '宁夏': 'province/ningxia',   
+
+        '宁夏': 'province/ningxia',
         '银川市': 'city/640100',
         '石嘴山市': 'city/640200',
         '吴忠市': 'city/640300',
         '固原市': 'city/640400',
         '中卫市': 'city/640500',
 
-        '新疆': 'province/xinjiang',  
+        '新疆': 'province/xinjiang',
         '乌鲁木齐市': 'city/650100',
         '克拉玛依市': 'city/650200',
         '吐鲁番地区': 'city/652100',
@@ -732,7 +715,7 @@ flyingon.Control.extend('HomeMap', function () {
         '阿勒泰地区': 'city/654300',
         '自治区直辖县级行政区划': 'city/659000',
 
-        '香港': 'province/xianggang',   
+        '香港': 'province/xianggang',
         '香港特别行政区': 'city/810100',
 
         '澳门': 'province/aomen',
@@ -753,25 +736,23 @@ flyingon.Control.extend('HomeMap', function () {
 
         this.on('click', function () {
 
-            if (stack[3])
-            {
+            if (stack[3]) {
                 stack.length -= 2;
                 load(self, null, stack[stack.length - 2], stack[stack.length - 1]);
             }
         });
 
         setTimeout(function () {
-         
+
             var chart = self.chart = echarts.init(self.view);
 
             load(self, stack, 'map/china.json', '');
 
-            chart.on('click', function(params){
+            chart.on('click', function (params) {
 
                 var file;
 
-                if (params.data && (file = params.data.file))
-                {
+                if (params.data && (file = params.data.file)) {
                     load(self, stack, file, params.name);
                 }
 
@@ -786,13 +767,11 @@ flyingon.Control.extend('HomeMap', function () {
 
         var data;
 
-        if (stack)
-        {
+        if (stack) {
             stack.push(file, text);
         }
 
-        if (data = cache[file])
-        {
+        if (data = cache[file]) {
             show(self, file, text, data);
             return;
         }
@@ -824,8 +803,7 @@ flyingon.Control.extend('HomeMap', function () {
 
     this.refreshChart = function () {
 
-        if (this.chart)
-        {
+        if (this.chart) {
             this.chart.resize();
         }
     }
@@ -846,7 +824,7 @@ flyingon.Panel.extend('ChartPanel', function () {
 
     this.defineProperty('title', '', {
 
-        set: this.render   
+        set: this.render
     });
 
 
@@ -867,16 +845,16 @@ flyingon.renderer('ChartPanel', 'Panel', function (base) {
     this.render = function (writer, control, render) {
 
         writer.push('<div');
-        
+
         render.call(this, writer, control);
 
         writer.push('>',
             '<div class="f-chartpanel-head">',
-                '<span class="f-chartpanel-title"></span>',
-                '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">',
-                    '<path d="M0 1 S8 0 12 8 L20 24 S23 25 26 25" />',
-                '</svg>',
-                '<span class="f-chartpanel-img"></span>',
+            '<span class="f-chartpanel-title"></span>',
+            '<svg version="1.1" xmlns="http://www.w3.org/2000/svg">',
+            '<path d="M0 1 S8 0 12 8 L20 24 S23 25 26 25" />',
+            '</svg>',
+            '<span class="f-chartpanel-img"></span>',
             '</div>',
             '<div class="f-chartpanel-corner" index="1"></div>',
             '<div class="f-chartpanel-corner" index="2"></div>',
@@ -884,8 +862,7 @@ flyingon.renderer('ChartPanel', 'Panel', function (base) {
             '<div class="f-chartpanel-corner" index="4"></div>',
             '<div class="f-chartpanel-body">');
 
-        if (control.length > 0 && control.__visible)
-        {
+        if (control.length > 0 && control.__visible) {
             control.__content_render = true;
             this.__render_children(writer, control, control, 0, control.length);
         }
@@ -894,7 +871,7 @@ flyingon.renderer('ChartPanel', 'Panel', function (base) {
             '</div>');
     };
 
-    
+
     this.mount = function (control, view) {
 
         control.view_content = view.lastChild;
@@ -923,24 +900,33 @@ flyingon.HomePlugin = flyingon.widget({
         children: [
             {
                 Class: 'Panel',
-                height: 118,
+                //height: 118,
+                height: 85,
                 dock: 'top',
                 children: [
+                    // {
+                    //     Class: 'DigitalTime',
+                    //     margin: '6 0 0 8',
+                    //     width: '100%',
+                    //     textAlign: 'left',
+                    //     fontSize: '20px'
+                    // },
                     {
                         Class: 'Label',
-                        text: '顺彩BI图表分析平台',
+                        text: '顺彩BI智能分析平台',
                         width: '100%',
                         height: 60,
                         margin: '12 0',
                         textAlign: 'center',
                         fontSize: '24px'
-                    },
-                    {
-                        Class: 'DigitalTime',
-                        width: '100%',
-                        textAlign: 'center',
-                        fontSize: '20px'
                     }
+                    // },
+                    // {
+                    //     Class: 'DigitalTime',
+                    //     width: '100%',
+                    //     textAlign: 'center',
+                    //     fontSize: '20px'
+                    // }
                 ]
             },
             {
@@ -969,19 +955,15 @@ flyingon.HomePlugin = flyingon.widget({
             var target = event.target,
                 url;
 
-            while (target && target !== this)
-            {
-                if (url = target.url)
-                {
-                    if (checkUrl(globals.menutree, url))
-                    {
+            while (target && target !== this) {
+                if (url = target.url) {
+                    if (checkUrl(globals.menutree, url)) {
                         location.hash = '!' + url;
                     }
-                    else
-                    {
+                    else {
                         flyingon.showMessage('提醒', '您没有查看此图表的权限!', 'information', 'ok');
                     }
-                    
+
                     return;
                 }
 
@@ -992,19 +974,16 @@ flyingon.HomePlugin = flyingon.widget({
 
 
         function checkResize() {
-        
+
             var value = host.offsetWidth << 8 + host.offsetHeight;
 
-            if (value !== size)
-            {
-                if (size > 0)
-                {
+            if (value !== size) {
+                if (size > 0) {
                     var controls = [];
-                    
+
                     findControls(host, 'refreshChart', controls);
 
-                    for (var i = controls.length; i--;)
-                    {
+                    for (var i = controls.length; i--;) {
                         controls[i].refreshChart();
                     }
                 }
@@ -1017,9 +996,8 @@ flyingon.HomePlugin = flyingon.widget({
 
 
         function refresh() {
-            
-            if (timeout)
-            {
+
+            if (timeout) {
                 clearTimeout(timeout);
                 timeout = 0;
             }
@@ -1047,8 +1025,7 @@ flyingon.HomePlugin = flyingon.widget({
 
             data = data[1];
 
-            for (var i = controls.length; i--;)
-            {
+            for (var i = controls.length; i--;) {
                 controls[i].setData(data);
             }
 
@@ -1058,14 +1035,11 @@ flyingon.HomePlugin = flyingon.widget({
 
         function findControls(parent, name, outputs) {
 
-            for (var i = parent.length; i--;)
-            {
-                if (parent[i][name])
-                {
+            for (var i = parent.length; i--;) {
+                if (parent[i][name]) {
                     outputs.push(parent[i]);
                 }
-                else if (parent[i].length > 0)
-                {
+                else if (parent[i].length > 0) {
                     findControls(parent[i], name, outputs);
                 }
             }
@@ -1075,17 +1049,14 @@ flyingon.HomePlugin = flyingon.widget({
 
         function checkUrl(list, url) {
 
-            for (var i = list.length; i--;)
-            {
+            for (var i = list.length; i--;) {
                 var item = list[i];
 
-                if (item.url === url)
-                {
+                if (item.url === url) {
                     return true;
                 }
 
-                if (item.children && checkUrl(item.children, url))
-                {
+                if (item.children && checkUrl(item.children, url)) {
                     return true;
                 }
             }
@@ -1108,20 +1079,16 @@ flyingon.Control.extend(function (Class, base) {
     // 编译计算字段
     this.compileComputed = function (computed, data) {
 
-        if (computed)
-        {
+        if (computed) {
             this.computed = computed = eval(computed);
 
-            for (var i = data.length; i--;)
-            {
-                for (var name in computed)
-                {
+            for (var i = data.length; i--;) {
+                for (var name in computed) {
                     data[i][name] = computed[name](data[i]);
                 }
             }
         }
-        else
-        {
+        else {
             this.valueFields = valueFields;
             this.computed = null;
         }
@@ -1134,26 +1101,21 @@ flyingon.Control.extend(function (Class, base) {
         var computed = this.computed,
             computedFields;
 
-        if (valueFields)
-        {
+        if (valueFields) {
             valueFields = valueFields.slice(0);
 
-            if (computed)
-            {
-                for (var i = valueFields.length; i--;)
-                {
+            if (computed) {
+                for (var i = valueFields.length; i--;) {
                     var name = valueFields[i];
 
-                    if (computed[name])
-                    {
+                    if (computed[name]) {
                         valueFields.splice(i, 1);
                         (computedFields || (computedFields = Object.create(null)))[name] = computed[name];
                     }
                 }
             }
         }
-        else
-        {
+        else {
             valueFields = [];
         }
 
@@ -1164,27 +1126,23 @@ flyingon.Control.extend(function (Class, base) {
 
     // 计算分组值
     this.computeValues = function (target, data, valueFields, computedFields) {
-        
+
         var decimal = Decimal.singleton(0),
             field;
 
-        for (var i = valueFields.length; i--;)
-        {
+        for (var i = valueFields.length; i--;) {
             field = valueFields[i];
             decimal.v = decimal.d = 0;
 
-            for (var j = data.length; j--;)
-            {
+            for (var j = data.length; j--;) {
                 decimal.plus(data[j][field]);
             }
-            
+
             target[field] = decimal.value;
         }
-        
-        if (computedFields)
-        {
-            for (field in computedFields)
-            {
+
+        if (computedFields) {
+            for (field in computedFields) {
                 target[field] = computedFields[field](target);
             }
         }
@@ -1204,51 +1162,41 @@ flyingon.Control.extend(function (Class, base) {
 
         categoryFields = categoryFields.split(',');
 
-        if ((length = categoryFields.length) > 1)
-        {
+        if ((length = categoryFields.length) > 1) {
             any = new Array(length);
-            
-            for (var i = 0, l = data.length; i < l; i++)
-            {
+
+            for (var i = 0, l = data.length; i < l; i++) {
                 item = data[i];
 
-                for (var j = length; j--;)
-                {
+                for (var j = length; j--;) {
                     any[j] = item[categoryFields[j]];
                 }
 
-                if (group = keys[key = any.join('-')])
-                {
+                if (group = keys[key = any.join('-')]) {
                     group.__data.push(item);
                 }
-                else
-                {
+                else {
                     groups.push(group = keys[key] = {
                         __by: key,
                         __data: [item]
                     });
 
-                    for (var j = length; j--;)
-                    {
+                    for (var j = length; j--;) {
                         group[categoryFields[j]] = any[j];
                     }
                 }
             }
         }
-        else
-        {
+        else {
             categoryFields = categoryFields[0];
 
-            for (var i = 0, l = data.length; i < l; i++)
-            {
+            for (var i = 0, l = data.length; i < l; i++) {
                 item = data[i];
 
-                if (group = keys[key = item[categoryFields]])
-                {
+                if (group = keys[key = item[categoryFields]]) {
                     group.__data.push(item);
                 }
-                else
-                {
+                else {
                     groups.push(group = keys[key] = {
                         __by: key,
                         __data: [item]
@@ -1259,8 +1207,7 @@ flyingon.Control.extend(function (Class, base) {
             }
         }
 
-        for (var i = groups.length; i--;)
-        {
+        for (var i = groups.length; i--;) {
             this.computeValues(groups[i], groups[i].__data, valueFields, computedFields);
         }
 
@@ -1275,49 +1222,42 @@ flyingon.Control.extend(function (Class, base) {
 
 
     this.sortData = function (data, name, desc) {
-    
-        if (name)
-        {
-            if (desc)
-            {
+
+        if (name) {
+            if (desc) {
                 data.sort(function (a, b) {
 
                     a = a[name];
                     b = b[name];
-            
-                    if (a > b)
-                    {
+
+                    if (a > b) {
                         return 1;
                     }
-            
+
                     return a < b ? -1 : 0;
                 });
             }
-            else
-            {
+            else {
                 data.sort(function (a, b) {
 
                     a = a[name];
                     b = b[name];
-            
-                    if (a > b)
-                    {
+
+                    if (a > b) {
                         return -1;
                     }
-            
+
                     return a < b ? 1 : 0;
                 });
             }
         }
-        else if (desc)
-        {
+        else if (desc) {
             data.sort(function (a, b) {
 
                 return -('' + a.__by).localeCompare(b.__by, 'zh');
             });
         }
-        else
-        {
+        else {
             data.sort(function (a, b) {
 
                 return ('' + a.__by).localeCompare(b.__by, 'zh');
@@ -1331,8 +1271,7 @@ flyingon.Control.extend(function (Class, base) {
 
         var array = [];
 
-        for (var i = data.length; i--;)
-        {
+        for (var i = data.length; i--;) {
             array[i] = data[i][field];
         }
 
@@ -1346,38 +1285,31 @@ flyingon.Control.extend(function (Class, base) {
 
         this.sortData(data, sort, desc);
 
-        if ((any = option.xAxis) && any.type === 'category')
-        {
+        if ((any = option.xAxis) && any.type === 'category') {
             any.data = fieldValues(data, '__by');
         }
-        else if ((any = option.yAxis) && any.type === 'category')
-        {
+        else if ((any = option.yAxis) && any.type === 'category') {
             any.data = fieldValues(data, '__by');
         }
 
-        if (any = option.series)
-        {
+        if (any = option.series) {
             var array = any;
 
-            if (!(array instanceof Array))
-            {
+            if (!(array instanceof Array)) {
                 array = option.series = [];
 
-                for (var i = valueFields.length; i--;)
-                {
+                for (var i = valueFields.length; i--;) {
                     array[i] = Object.assign({}, any);
                     array[i].name = valueFields[i];
                 }
             }
 
-            for (var i = array.length; i--;)
-            {
+            for (var i = array.length; i--;) {
                 array[i].data = fieldValues(data, array[i].name);
             }
         }
 
-        if (!(any = this.chart))
-        {
+        if (!(any = this.chart)) {
             var self = this;
 
             any = this.chart = echarts.init(this.view);
@@ -1389,7 +1321,7 @@ flyingon.Control.extend(function (Class, base) {
         }
 
         any.setOption(option);
-        
+
         this.__show = [option, data, valueFields, sort, desc];
     }
 
@@ -1398,8 +1330,7 @@ flyingon.Control.extend(function (Class, base) {
 
         var show = this.__show;
 
-        if (show)
-        {
+        if (show) {
             show[3] = field;
             show[4] = desc;
 
@@ -1447,7 +1378,7 @@ flyingon.ChartPlugin = flyingon.widget({
                 border: '0 0 1 0',
                 padding: 4,
                 children: [
-                    { 
+                    {
                         Class: 'Button',
                         width: 60,
                         key: 'refresh',
@@ -1558,7 +1489,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
     created: function () {
 
-        
+
         var host = this.findById('chart-host')[0];
         var chart = host[0];
         var toolbar = this.findByType('ToolBar');
@@ -1591,14 +1522,12 @@ flyingon.ChartPlugin = flyingon.widget({
 
             var key;
 
-            if (categoryBox.value())
-            {
+            if (categoryBox.value()) {
                 flyingon.showMessage('提醒', '选择了分组时不能往下钻取!', 'information', 'ok');
                 return;
             }
 
-            if ((key = event.chart) && (key = key.name))
-            {
+            if ((key = event.chart) && (key = key.name)) {
                 drilldownClick(key);
             }
         });
@@ -1606,8 +1535,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
         toolbar.on('click', function (event) {
 
-            switch (event.target.get('key'))
-            {
+            switch (event.target.get('key')) {
                 case 'refresh':
                     refresh();
                     break;
@@ -1633,8 +1561,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
         sortBox.on('change', function () {
 
-            if ((sortField = sortBox.value()) === defaultSort)
-            {
+            if ((sortField = sortBox.value()) === defaultSort) {
                 sortField = '';
             }
 
@@ -1648,13 +1575,11 @@ flyingon.ChartPlugin = flyingon.widget({
             var last = drilldownStack[drilldownStack.length - 1],
                 groups = last.keys[key];
 
-            if (groups && groups.__list[0])
-            {
+            if (groups && groups.__list[0]) {
                 pushDrilldown(last.dimension, last.index + 1, key, groups);
                 refreshChart(true);
             }
-            else
-            {
+            else {
                 flyingon.showMessage('提醒', '钻到底了,不能继续往下钻取!', 'information', 'ok');
             }
         }
@@ -1668,7 +1593,7 @@ flyingon.ChartPlugin = flyingon.widget({
             refresh();
         }
 
-        
+
 
         function refresh() {
 
@@ -1685,32 +1610,27 @@ flyingon.ChartPlugin = flyingon.widget({
 
         function loadData(data) {
 
-            try
-            {
+            try {
                 data = data && JSON.parse(data);
             }
-            catch (e)
-            {
+            catch (e) {
                 flyingon.toast.hide();
                 flyingon.showMessage('错误', '图表配置错误, 无法正确解析配置的数据!\n\n错误信息:\n' + e.message, 'error', 'ok');
                 return;
             }
 
-            if (!data)
-            {
+            if (!data) {
                 flyingon.toast.hide();
                 flyingon.showMessage('错误', '未配置图表, 请检查!', 'error', 'ok');
                 return;
             }
 
-            try
-            {
+            try {
                 var options = data[0],
                     view = dimensionHost.view;
-                
+
                 // 默认选中第一个维度
-                if (view = view && view.querySelector('input[type="radio"]'))
-                {
+                if (view = view && view.querySelector('input[type="radio"]')) {
                     view.checked = true;
                 }
 
@@ -1721,8 +1641,7 @@ flyingon.ChartPlugin = flyingon.widget({
                 categoryBox.clear();
 
                 // 数组模板为钻取图表
-                if (options instanceof Array)
-                {
+                if (options instanceof Array) {
                     // 获取列配置
                     columns = options[0];
                     options.shift();
@@ -1735,8 +1654,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
                     initDimension(dimensionList = options, data[2]);
                 }
-                else
-                {
+                else {
                     chart.compileComputed(data[1], data[2]);
 
                     categoryBox.items(options.category || []);
@@ -1749,13 +1667,11 @@ flyingon.ChartPlugin = flyingon.widget({
 
                     parseColumns(options.fields);
 
-                    if (host[1])
-                    {
+                    if (host[1]) {
                         host[0].remove();
                     }
-        
-                    if (dimension.grid)
-                    {
+
+                    if (dimension.grid) {
                         host.splice(0, 0, dimension.grid);
                         flyingon.__update_patch();
                     }
@@ -1763,8 +1679,7 @@ flyingon.ChartPlugin = flyingon.widget({
                     refreshChart();
                 }
             }
-            finally
-            {
+            finally {
                 flyingon.toast.hide();
             }
         }
@@ -1777,23 +1692,20 @@ flyingon.ChartPlugin = flyingon.widget({
 
             dimensions.index = 0;
 
-            for (var i = 0, l = dimensions.length; i < l; i++)
-            {
+            for (var i = 0, l = dimensions.length; i < l; i++) {
                 var dimension = dimensions[i],
                     field = dimension.field;
 
                 array.push('<label style="margin:0 6px;">',
                     '<input type="radio" index="', i,
-                        '" name="', name, 
-                        '" style="margin:0;vertical-align:middle;"', 
-                        i === 0 ? ' checked="checked"' : '', ' />',
+                    '" name="', name,
+                    '" style="margin:0;vertical-align:middle;"',
+                    i === 0 ? ' checked="checked"' : '', ' />',
                     '<span>', dimensions[i].text, '</span>',
                     '</label>');
 
-                if (field instanceof Array)
-                {
-                    if (!field[0] || !field[1])
-                    {
+                if (field instanceof Array) {
+                    if (!field[0] || !field[1]) {
                         flyingon.showMessage('错误', '图表配置错误, 多字段钻取最少要设置两个字段!', 'error', 'ok');
                         return;
                     }
@@ -1821,22 +1733,19 @@ flyingon.ChartPlugin = flyingon.widget({
         function startDrilldown(dimension, data) {
 
             var groups = dimension.groups;
-            
-            if (!groups)
-            {
+
+            if (!groups) {
                 groups = dimension.groups = dimension.fields ? drilldownFields(dimension, data) : drilldownField(dimension, data);
 
                 chart.praseComputed(dimension, dimension.value);
                 computeDrilldown(groups, dimension.valueFields, dimension.computedFields, chart.computeValues);
             }
 
-            if (host[1])
-            {
+            if (host[1]) {
                 host[0].remove();
             }
 
-            if (dimension.grid)
-            {
+            if (dimension.grid) {
                 host.splice(0, 0, dimension.grid);
                 flyingon.__update_patch();
             }
@@ -1848,12 +1757,10 @@ flyingon.ChartPlugin = flyingon.widget({
             pushDrilldown(dimension, 0, '起点', groups);
 
             // 只有一个项继续往下钻
-            if (dimension.skipstart)
-            {
+            if (dimension.skipstart) {
                 var index = 1;
 
-                while ((groups = groups.__list).length === 1)
-                {
+                while ((groups = groups.__list).length === 1) {
                     groups = groups[0];
                     pushDrilldown(dimension, index++, groups[dimension.field], groups);
                 }
@@ -1876,38 +1783,31 @@ flyingon.ChartPlugin = flyingon.widget({
                 key,
                 any;
 
-            for (var i = 0, l = data.length; i < l; i++)
-            {
-                if (key = (item = data[i])[field])
-                {
+            for (var i = 0, l = data.length; i < l; i++) {
+                if (key = (item = data[i])[field]) {
                     list = key.split(split);
 
-                    if (any = keys[key = list[0]])
-                    {
+                    if (any = keys[key = list[0]]) {
                         group = any;
                         group.__data.push(item);
                     }
-                    else
-                    {
+                    else {
                         groups.push(group = keys[key] = {
                             __by: key,
                             __keys: Object.create(null),
                             __data: [item],
                             __list: []
                         });
-                        
+
                         group[field] = key;
                     }
 
-                    for (var j = 1, l2 = list.length; j < l2; j++)
-                    {
-                        if (any = group.__keys[key = list[j]])
-                        {
+                    for (var j = 1, l2 = list.length; j < l2; j++) {
+                        if (any = group.__keys[key = list[j]]) {
                             group = any;
                             group.__data.push(item);
                         }
-                        else
-                        {
+                        else {
                             group.__list.push(group = group.__keys[key] = {
                                 __by: key,
                                 __keys: Object.create(null),
@@ -1942,36 +1842,30 @@ flyingon.ChartPlugin = flyingon.widget({
                 key,
                 any;
 
-            for (var i = 0, l = data.length; i < l; i++)
-            {
+            for (var i = 0, l = data.length; i < l; i++) {
                 item = data[i];
 
-                if (any = keys[key = item[field]])
-                {
+                if (any = keys[key = item[field]]) {
                     group = any;
                     group.__data.push(item);
                 }
-                else
-                {
+                else {
                     groups.push(group = keys[key] = {
                         __by: key,
                         __keys: Object.create(null),
                         __data: [item],
                         __list: []
                     });
-                    
+
                     group[field] = key;
                 }
 
-                for (var j = 1; j < length; j++)
-                {
-                    if (any = group.__keys[key = item[fields[j]]])
-                    {
+                for (var j = 1; j < length; j++) {
+                    if (any = group.__keys[key = item[fields[j]]]) {
                         group = any;
                         group.__data.push(item);
                     }
-                    else
-                    {
+                    else {
                         group.__list.push(group = group.__keys[key] = {
                             __by: key,
                             __keys: Object.create(null),
@@ -1994,11 +1888,10 @@ flyingon.ChartPlugin = flyingon.widget({
 
         // 计算钻取字段值
         function computeDrilldown(groups, valueFields, computedFields, fn) {
-        
+
             var list = groups.__list;
 
-            for (var i = list.length; i--;)
-            {
+            for (var i = list.length; i--;) {
                 computeDrilldown(list[i], valueFields, computedFields, fn);
             }
 
@@ -2021,8 +1914,8 @@ flyingon.ChartPlugin = flyingon.widget({
             pathHost.text(pathHost.text() + [
 
                 '<span class="wy-drilldown-path">',
-                    index > 0 ? '<span style="margin:0 4px;">&gt;</span>' : '',
-                    '<span index="', index, '">', text, '</span>',
+                index > 0 ? '<span style="margin:0 4px;">&gt;</span>' : '',
+                '<span index="', index, '">', text, '</span>',
                 '</span>'
 
             ].join(''));
@@ -2033,21 +1926,18 @@ flyingon.ChartPlugin = flyingon.widget({
 
             var target = event.target;
 
-            if (target.nodeType !== 1)
-            {
+            if (target.nodeType !== 1) {
                 target = target.parentNode;
             }
 
             var index = target.getAttribute('index');
 
-            if (index)
-            {
+            if (index) {
                 var any;
 
                 target = target.parentNode;
 
-                while (any = target.nextSibling)
-                {
+                while (any = target.nextSibling) {
                     any.parentNode.removeChild(any);
                 }
 
@@ -2065,14 +1955,13 @@ flyingon.ChartPlugin = flyingon.widget({
             var index = event.target.getAttribute('index') | 0,
                 dimension = dimensionList[index];
 
-            if (dimension)
-            {
+            if (dimension) {
                 drilldownStack.length = 0;
                 startDrilldown(dimension, dimension.data);
             }
         }
 
-        
+
         function refreshChart() {
 
             var category = categoryBox.value(),
@@ -2082,30 +1971,24 @@ flyingon.ChartPlugin = flyingon.widget({
             filterKeys = null;
 
             // 非钻取图表
-            if (last = nodrilldown)
-            {
+            if (last = nodrilldown) {
                 renderFilter(chartData = last.data);
 
-                if (category)
-                {
+                if (category) {
                     data = chart.computeGroup(chartData, category, last.valueFields, last.computedFields);
                 }
-                else
-                {
+                else {
                     data = chartData;
                 }
             }
-            else if (last = drilldownStack[drilldownStack.length - 1])
-            {
+            else if (last = drilldownStack[drilldownStack.length - 1]) {
                 renderFilter(chartData = last.data);
 
-                if (category)
-                {
+                if (category) {
                     last = last.dimension;
                     data = chart.computeGroup(chartData, category, last.valueFields, last.computedFields);
                 }
-                else
-                {
+                else {
                     data = last.groups;
                     last = last.dimension;
                 }
@@ -2113,8 +1996,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
             chart.show(last.template, data, last.value, sortField, sortDesc);
 
-            if (host[1])
-            {
+            if (host[1]) {
                 refreshGrid(last.value, data);
             }
         }
@@ -2127,26 +2009,21 @@ flyingon.ChartPlugin = flyingon.widget({
                 data;
 
             // 非钻取图表
-            if (last = nodrilldown)
-            {
+            if (last = nodrilldown) {
                 syncFilter(chartData = filterData(last.data));
 
-                if (category)
-                {
+                if (category) {
                     data = chart.computeGroup(chartData, category, last.valueFields, last.computedFields);
                 }
             }
-            else if (last = drilldownStack[drilldownStack.length - 1])
-            {
+            else if (last = drilldownStack[drilldownStack.length - 1]) {
                 var dimension = last.dimension;
 
-                if (category)
-                {
+                if (category) {
                     syncFilter(chartData = filterData(last.data));
                     data = chart.computeGroup(chartData, category, dimension.valueFields, dimension.computedFields);
                 }
-                else
-                {
+                else {
                     chartData && (chartData.length = 0);
                     data = filterGroup(last.groups, last.field, dimension.valueFields, dimension.computedFields, chart.computeValues, chartData);
                 }
@@ -2155,9 +2032,8 @@ flyingon.ChartPlugin = flyingon.widget({
             }
 
             chart.show(last.template, data, last.value, sortField, sortDesc);
-            
-            if (host[1])
-            {
+
+            if (host[1]) {
                 refreshGrid(last.value, data);
             }
         }
@@ -2181,14 +2057,11 @@ flyingon.ChartPlugin = flyingon.widget({
                 no: true
             });
 
-            if (category)
-            {
+            if (category) {
                 category = category.split(',');
 
-                for (var i = 0, l = category.length; i < l; i++)
-                {
-                    if (column = findColumn(columns, category[i]))
-                    {
+                for (var i = 0, l = category.length; i < l; i++) {
+                    if (column = findColumn(columns, category[i])) {
                         column = Object.assign({}, column);
                         column.merge = 1;
 
@@ -2197,8 +2070,7 @@ flyingon.ChartPlugin = flyingon.widget({
                     }
                 }
             }
-            else
-            {
+            else {
                 total += 120;
 
                 list.push({
@@ -2208,17 +2080,15 @@ flyingon.ChartPlugin = flyingon.widget({
                     onrender: function (cell) {
 
                         cell.color('#3498DB').cursor('default').on('click', function () {
-                          
+
                             drilldownClick(this.text());
                         });
                     }
                 });
             }
 
-            for (var i = 0, l = columns.length; i < l; i++)
-            {
-                if (valueFields.indexOf(columns[i].name) >= 0)
-                {
+            for (var i = 0, l = columns.length; i < l; i++) {
+                if (valueFields.indexOf(columns[i].name) >= 0) {
                     column = Object.assign({}, columns[i]);
 
                     total += column.size;
@@ -2228,8 +2098,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
             total = (grid.offsetWidth - 60) / total;
 
-            for (var i = 1, l = list.length; i < l; i++)
-            {
+            for (var i = 1, l = list.length; i < l; i++) {
                 list[i].size = list[i].size * total | 0;
             }
 
@@ -2240,10 +2109,8 @@ flyingon.ChartPlugin = flyingon.widget({
 
         function findColumn(columns, name) {
 
-            for (var i = columns.length; i--;)
-            {
-                if (columns[i].name === name)
-                {
+            for (var i = columns.length; i--;) {
+                if (columns[i].name === name) {
                     return columns[i];
                 }
             }
@@ -2255,13 +2122,11 @@ flyingon.ChartPlugin = flyingon.widget({
             var list = [],
                 all = [];
 
-            for (var i = groups.length; i--;)
-            {
+            for (var i = groups.length; i--;) {
                 var item = groups[i],
                     data = filterData(item.__data);
 
-                if (data.length > 0)
-                {
+                if (data.length > 0) {
                     all.push.apply(all, data);
                     all.push.apply(chartData, data);
 
@@ -2285,15 +2150,12 @@ flyingon.ChartPlugin = flyingon.widget({
             var keys = filterKeys,
                 list = [];
 
-        LOOP:
-            for (var i = 0, l = data.length; i < l; i++)
-            {
+            LOOP:
+            for (var i = 0, l = data.length; i < l; i++) {
                 var item = data[i];
 
-                for (var name in keys)
-                {
-                    if (keys[name][item[name]])
-                    {
+                for (var name in keys) {
+                    if (keys[name][item[name]]) {
                         continue LOOP;
                     }
                 }
@@ -2314,25 +2176,22 @@ flyingon.ChartPlugin = flyingon.widget({
                 name,
                 html;
 
-            for (var i = 0, l = items.length; i < l; i++)
-            {
+            for (var i = 0, l = items.length; i < l; i++) {
                 name = items[i];
 
-                if (text.indexOf(name) >= 0)
-                {
+                if (text.indexOf(name) >= 0) {
                     continue;
                 }
 
-                if (html = renderFilterHtml(data, name))
-                {
+                if (html = renderFilterHtml(data, name)) {
                     list.push('<div class="chart-filter-box" field="', name, '">',
-                            '<div class="chart-filter-head" key="switch-collapse">',
-                                '<span>', name, '</span>',
-                                '<span style="display:none;float:right;padding-right:10px;">展开</span>',
-                                '<span key="select-all" style="float:right;padding:0 10px;">全选</span>',
-                                '<span key="select-reverse" style="float:right;">反选</span>',
-                            '</div>',
-                            '<div class="chart-filter-body">', html, '</div>',
+                        '<div class="chart-filter-head" key="switch-collapse">',
+                        '<span>', name, '</span>',
+                        '<span style="display:none;float:right;padding-right:10px;">展开</span>',
+                        '<span key="select-all" style="float:right;padding:0 10px;">全选</span>',
+                        '<span key="select-reverse" style="float:right;">反选</span>',
+                        '</div>',
+                        '<div class="chart-filter-body">', html, '</div>',
                         '</div>');
                 }
             }
@@ -2345,7 +2204,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
 
         function localeCompare(a, b) {
-        
+
             return ('' + a).localeCompare(b, 'zh');
         }
 
@@ -2354,22 +2213,19 @@ flyingon.ChartPlugin = flyingon.widget({
 
             var list = [],
                 text;
-            
+
             keys = keys || Object.create(null);
 
-            for (var i = 0, l = data.length; i < l; i++)
-            {
+            for (var i = 0, l = data.length; i < l; i++) {
                 text = data[i][field];
 
-                if (!keys[text])
-                {
+                if (!keys[text]) {
                     keys[text] = true;
                     list.push(text);
                 }
             }
 
-            if (list.length > 1)
-            {
+            if (list.length > 1) {
                 list.sort(localeCompare);
             }
 
@@ -2381,14 +2237,12 @@ flyingon.ChartPlugin = flyingon.widget({
 
             var list = categoryValues(data, field);
 
-            if (list.length > 0)
-            {
-                for (var i = list.length; i--;)
-                {
-                    list[i] = '<span class="chart-filter-item" key="' 
-                        + list[i] 
-                        + '"><input type="checkbox" checked="checked" /><span>' 
-                        + list[i] 
+            if (list.length > 0) {
+                for (var i = list.length; i--;) {
+                    list[i] = '<span class="chart-filter-item" key="'
+                        + list[i]
+                        + '"><input type="checkbox" checked="checked" /><span>'
+                        + list[i]
                         + '</span></span>';
                 }
 
@@ -2405,27 +2259,22 @@ flyingon.ChartPlugin = flyingon.widget({
                 key = dom.parentNode.getAttribute('key'),
                 any;
 
-            if (!dom.checked)
-            {
-                if (keys)
-                {
+            if (!dom.checked) {
+                if (keys) {
                     any = keys[type] || (keys[type] = {});
                 }
-                else
-                {
+                else {
                     keys = filterKeys = {};
                     keys[type] = any = {};
                 }
 
                 any[key] = 1;
             }
-            else if (keys && (any = keys[type]))
-            {
+            else if (keys && (any = keys[type])) {
                 delete any[key];
             }
 
-            if (filterDelay)
-            {
+            if (filterDelay) {
                 clearTimeout(filterDelay);
             }
 
@@ -2439,23 +2288,18 @@ flyingon.ChartPlugin = flyingon.widget({
                 box,
                 key;
 
-            while (dom && (dom.nodeType !== 1 || !(key = dom.getAttribute('key'))))
-            {
+            while (dom && (dom.nodeType !== 1 || !(key = dom.getAttribute('key')))) {
                 dom = dom.parentNode;
             }
 
-            if (box = dom && dom.parentNode)
-            {
-                while (box && !box.classList.contains('chart-filter-box'))
-                {
+            if (box = dom && dom.parentNode) {
+                while (box && !box.classList.contains('chart-filter-box')) {
                     box = box.parentNode;
                 }
 
-                switch (key)
-                {
+                switch (key) {
                     case 'select-all':
-                        if (filterKeys)
-                        {
+                        if (filterKeys) {
                             selectAll(box);
                         }
                         break;
@@ -2478,14 +2322,11 @@ flyingon.ChartPlugin = flyingon.widget({
                 type = box.getAttribute('field'),
                 key;
 
-            if (keys = keys[type])
-            {
+            if (keys = keys[type]) {
                 var dom = box.lastChild.firstChild;
 
-                while (dom)
-                {
-                    if (key = dom.getAttribute('key'))
-                    {
+                while (dom) {
+                    if (key = dom.getAttribute('key')) {
                         dom.firstChild.checked = true;
                         delete keys[key];
                     }
@@ -2493,11 +2334,10 @@ flyingon.ChartPlugin = flyingon.widget({
                     dom = dom.nextSibling;
                 }
 
-                if (filterDelay)
-                {
+                if (filterDelay) {
                     clearTimeout(filterDelay);
                 }
-    
+
                 filterDelay = setTimeout(refreshFilter, 500);
             }
         }
@@ -2513,16 +2353,12 @@ flyingon.ChartPlugin = flyingon.widget({
 
             keys = keys[type] || (keys[type] = {});
 
-            while (dom)
-            {
-                if (key = dom.getAttribute('key'))
-                {
-                    if (dom.firstChild.checked = keys[key])
-                    {
+            while (dom) {
+                if (key = dom.getAttribute('key')) {
+                    if (dom.firstChild.checked = keys[key]) {
                         delete keys[key];
                     }
-                    else
-                    {
+                    else {
                         keys[key] = true;
                     }
                 }
@@ -2530,8 +2366,7 @@ flyingon.ChartPlugin = flyingon.widget({
                 dom = dom.nextSibling;
             }
 
-            if (filterDelay)
-            {
+            if (filterDelay) {
                 clearTimeout(filterDelay);
             }
 
@@ -2563,8 +2398,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
             var dom = filterBox.view.firstChild;
 
-            while (dom)
-            {
+            while (dom) {
                 var field = dom.getAttribute('field'),
                     keys = Object.create(null);
 
@@ -2577,11 +2411,10 @@ flyingon.ChartPlugin = flyingon.widget({
 
 
         function setFilterChecked(dom, keys) {
-        
+
             dom = dom.firstChild;
 
-            while (dom)
-            {
+            while (dom) {
                 dom.firstChild.checked = keys[dom.getAttribute('key')] || false;
                 dom = dom.nextSibling;
             }
@@ -2591,8 +2424,7 @@ flyingon.ChartPlugin = flyingon.widget({
 
         function showDataView() {
 
-            if (!chartData || !chartData.length)
-            {
+            if (!chartData || !chartData.length) {
                 flyingon.showMessage('提醒', '没有任何数据可供展示!', 'information', 'ok');
                 return;
             }
@@ -2633,12 +2465,10 @@ flyingon.ChartPlugin = flyingon.widget({
             var computed = chart.computed,
                 list = [{ type: 'no', size: 40, no: true }];
 
-            for (var i = 0, l = fields.length; i < l; i++)
-            {
+            for (var i = 0, l = fields.length; i < l; i++) {
                 var field = fields[i];
 
-                if (field.visible === false)
-                {
+                if (field.visible === false) {
                     continue;
                 }
 
@@ -2648,8 +2478,7 @@ flyingon.ChartPlugin = flyingon.widget({
                     size: field.width || 100
                 };
 
-                switch (field.type)
-                {
+                switch (field.type) {
                     case 'boolean':
                         column.type = 'checkbox';
                         break;
@@ -2657,8 +2486,7 @@ flyingon.ChartPlugin = flyingon.widget({
                     case 'number':
                         column.align = 'right';
 
-                        if (field.summary)
-                        {
+                        if (field.summary) {
                             column.summary = field.summary;
                         }
 
@@ -2682,21 +2510,18 @@ flyingon.ChartPlugin = flyingon.widget({
 
             column.summary = 'custom';
 
-            if (digits > 0)
-            {
+            if (digits > 0) {
                 column.precision = digits;
             }
 
-            if (fn)
-            {
+            if (fn) {
                 column.onsummary = function (row, value) {
 
                     var value = row.data[name] = fn(row.data);
                     return digits ? decimal(value).toFixed(digits) : value;
                 }
             }
-            else
-            {
+            else {
                 column.onsummary = function (row, value) {
 
                     return digits ? decimal(value).toFixed(digits) : value;
@@ -2708,29 +2533,25 @@ flyingon.ChartPlugin = flyingon.widget({
         function exportTo(chart) {
 
             var grid;
-            
-            if (host[0] && host[0].findByType && (grid = host[0].findByType('Grid')))
-            {
+
+            if (host[0] && host[0].findByType && (grid = host[0].findByType('Grid'))) {
                 var columns = grid.columns().slice(0),
                     dataset = grid.dataset(),
                     data = [];
 
-                for (var i = columns.length; i--;)
-                {
+                for (var i = columns.length; i--;) {
                     columns[i] = columns[i].title();
                 }
 
-                for (var i = dataset.length; i--;)
-                {
+                for (var i = dataset.length; i--;) {
                     data[i] = dataset[i].data;
                 }
 
-                flyingon.exportToXlsx(chart.chartName, 
+                flyingon.exportToXlsx(chart.chartName,
                     '<img src="' + chart.toDataURL() + '" /><br></br>' +
                     flyingon.arrayToHtml(columns, data));
             }
-            else
-            {
+            else {
                 chart.saveAsImage(chart.chartName);
             }
         }
@@ -2748,8 +2569,7 @@ flyingon.downloadDataURL = function (name, dataURL) {
     var a = document.createElement('a');
 
     // Chrome and Firefox
-    if (a.download != null)
-    {
+    if (a.download != null) {
         a.download = name;
         a.target = '_blank';
         a.href = dataURL;
@@ -2766,8 +2586,7 @@ flyingon.downloadDataURL = function (name, dataURL) {
             length = text.length,
             array = new Uint8Array(length);
 
-        while(length--)
-        {
+        while (length--) {
             array[length] = text.charCodeAt(length);
         }
 
@@ -2781,8 +2600,7 @@ flyingon.downloadBlob = function (name, blob) {
     var a = document.createElement('a');
 
     // Chrome and Firefox
-    if (a.download != null)
-    {
+    if (a.download != null) {
         a.download = name;
         a.target = '_blank';
         a.href = URL.createObjectURL(blob);
@@ -2807,8 +2625,8 @@ flyingon.importXlsx = function (file, callback) {
 
         var reader = new FileReader();
 
-        reader.onload = function(event) {
-            
+        reader.onload = function (event) {
+
             callback(XLSX.read(event.target.result, {
                 type: 'binary'
             }));
@@ -2820,12 +2638,12 @@ flyingon.importXlsx = function (file, callback) {
 
 
 flyingon.exportToXlsx = function (name, data) {
-    
+
     flyingon.script('js/xlsx.full.min.js', function () {
 
         var wb = XLSX.utils.book_new(),
             ws = XLSX.utils.json_to_sheet(data);
-        
+
         XLSX.utils.book_append_sheet(wb, ws);
         XLSX.writeFile(wb, name + '.xlsx');
     });
