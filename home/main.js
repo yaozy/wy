@@ -168,7 +168,8 @@ module.exports = {
                                     Class: 'HomeText',
                                     text: '出租率',
                                     align: 'center',
-                                    color: 'DarkGray'
+                                    //color: 'DarkGray'
+                                    color: 'White'
                                 },
                                 {
                                     Class: 'HomeText',
@@ -198,7 +199,7 @@ module.exports = {
                                     Class: 'HomeText',
                                     text: '出租面积',
                                     align: 'center',
-                                    color: 'DarkGray'
+                                    color: 'White'
                                 },
                                 {
                                     Class: 'HomeText',
@@ -475,7 +476,8 @@ module.exports = {
                     Class: 'Panel',
                     dock: 'bottom',
                     height: 80,
-                    padding: '2 20',
+                    //padding: '2 20',
+                    padding: '1 6 2 6',
                     layout: {
                         type: 'table',
                         spacingX: 10,
@@ -502,7 +504,7 @@ module.exports = {
                                 {
                                     Class: 'HomeText',
                                     text: '工单数',
-                                    color: 'DarkGray'
+                                    color: 'White'
                                 },
                                 {
                                     Class: 'HomeText',
@@ -535,7 +537,7 @@ module.exports = {
                                 {
                                     Class: 'HomeText',
                                     text: '完成率',
-                                    color: 'DarkGray'
+                                    color: 'White'
                                 },
                                 {
                                     Class: 'HomeText',
@@ -568,7 +570,7 @@ module.exports = {
                                 {
                                     Class: 'HomeText',
                                     text: '满意率',
-                                    color: 'DarkGray'
+                                    color: 'White'
                                 },
                                 {
                                     Class: 'HomeText',
@@ -601,7 +603,7 @@ module.exports = {
                                 {
                                     Class: 'HomeText',
                                     text: '投诉率',
-                                    color: 'DarkGray'
+                                    color: 'White'
                                 },
                                 {
                                     Class: 'HomeText',
@@ -627,7 +629,8 @@ module.exports = {
                             Class: 'Panel',
                             dock: 'top',
                             height: 80,
-                            padding: '2 20',
+                            //padding: '2 20',
+                            padding: '0 2 5 2',
                             layout: {
                                 type: 'table',
                                 spacingX: 10,
@@ -654,8 +657,8 @@ module.exports = {
                                         {
                                             Class: 'HomeText',
                                             text: '物业项目数',
-                                            fontSize: '16px',
-                                            color: 'DarkGray'
+                                            //fontSize: '16px',
+                                            color: 'White'
                                         },
                                         {
                                             Class: 'HomeText',
@@ -664,7 +667,7 @@ module.exports = {
                                             textShadow: '0 0 4px red',
                                             fontSize: '25px',
                                             color: 'CornflowerBlue',
-                                            align:'center',
+                                            align: 'center',
                                             fontFamily: 'digital'
                                         }
                                     ]
@@ -689,8 +692,8 @@ module.exports = {
                                         {
                                             Class: 'HomeText',
                                             text: '总应收(万元)',
-                                            fontSize: '16px',
-                                            color: 'DarkGray'
+                                            //fontSize: '16px',
+                                            color: 'White'
                                         },
                                         {
                                             Class: 'HomeText',
@@ -699,7 +702,7 @@ module.exports = {
                                             textShadow: '0 0 4px red',
                                             fontSize: '25px',
                                             color: 'CornflowerBlue',
-                                            align:'center',
+                                            align: 'center',
                                             fontFamily: 'digital'
                                         }
                                     ]
@@ -724,8 +727,8 @@ module.exports = {
                                         {
                                             Class: 'HomeText',
                                             text: '总已收(万元)',
-                                            fontSize: '16px',
-                                            color: 'DarkGray'
+                                            //fontSize: '16px',
+                                            color: 'White'
                                         },
                                         {
                                             Class: 'HomeText',
@@ -734,7 +737,7 @@ module.exports = {
                                             textShadow: '0 0 4px red',
                                             fontSize: '25px',
                                             color: 'CornflowerBlue',
-                                            align:'center',
+                                            align: 'center',
                                             fontFamily: 'digital'
                                         }
                                     ]
@@ -759,8 +762,8 @@ module.exports = {
                                         {
                                             Class: 'HomeText',
                                             text: '总欠收(万元)',
-                                            fontSize: '16px',
-                                            color: 'DarkGray'
+                                            //fontSize: '16px',
+                                            color: 'White'
                                         },
                                         {
                                             Class: 'HomeText',
@@ -769,7 +772,7 @@ module.exports = {
                                             textShadow: '0 0 4px red',
                                             fontSize: '25px',
                                             color: 'CornflowerBlue',
-                                            align:'center',
+                                            align: 'center',
                                             fontFamily: 'digital'
                                         }
                                     ]
