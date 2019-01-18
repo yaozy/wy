@@ -153,7 +153,7 @@ var host = flyingon.view({
                     menu.expandTo(2); // 展开第2级
 
                     // 加载默认插件
-                    loadPlugin(location.hash.replace(/^[#!]+/, ''));
+                    loadPlugin(location.hash.replace(/^[#!]+/, '') || 'pages/home.js');
 
                     logon.style.display = 'none';
                     logon.querySelector('input[type="password"]').value = '';
