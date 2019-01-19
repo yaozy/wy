@@ -759,42 +759,34 @@ flyingon.widget({
             });
 
 
+            function save() {
+
+                if (editor)
+                {
+                    var keys = [];
+                    keys.push(homepageid);
+                    keys.push(editor.getValue());
+
+                    flyingon.http.put('homepage', JSON.stringify(keys)).then(function () {
+
+                        flyingon.toast('首页配置保存成功！');
+                    });
+                }
+            }
+
+
             body.lastChild.style.height = '100%';
 
-            dialog.on('closed', function () {
-
-                var keys = [];
-                keys.push(homepageid);
-                keys.push(editor.getValue());
-
-                flyingon.http.put('homepage', JSON.stringify(keys)).then(function () {
-
-                    flyingon.toast('首页配置保存成功！');
-                });
-
-            });
+            dialog.on('closed', save);
 
             //ctrl+s 保存图表配置
             dialog.on('keydown', function (e) {
 
-                e = window.event || e;
+                e = e.original_event;
+
                 if (e.keyCode == 83 && e.ctrlKey) {
 
-                    /*延迟，兼容FF浏览器  */
-                    setTimeout(function () {
-
-                        //alert('ctrl+s');
-
-                        var keys = [];
-                        keys.push(homepageid);
-                        keys.push(editor.getValue());
-
-                        flyingon.http.put('homepage', JSON.stringify(keys)).then(function () {
-
-                            flyingon.toast('首页配置保存成功!');
-                        });
-
-                    }, 1);
+                    save();
 
                     e.stopPropagation();
                     e.preventDefault();
