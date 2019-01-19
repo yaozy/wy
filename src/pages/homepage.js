@@ -1,6 +1,6 @@
 const SQLAPI = require('../base/sqlapi').SQLAPI;
 
-const clear = require('../chart/cache').clearCache;
+const clear = require('../chart/home').clearCache;
 
 const api = new SQLAPI({
     table: 'homepage',
@@ -35,11 +35,11 @@ async function GET(context, next) {
 
     let query = context.query;
    //let query_SQL = 'select * from homepage where pid='+ query.pid + ' and (pagename like "%' + query.c + '%") order by pid,sort ';
-    let query_SQL = 'select * from homepage where pid=0 limit 1 ';
+    let query_SQL = 'select id, pagejson from homepage where pid=0 limit 1 ';
 
     let list = await context.app.sqlclient.query(query_SQL);
 
-    context.body = list;
+    context.body = list[0];
 
     await next();
 }
@@ -57,9 +57,9 @@ async function PUT(context, next) {
         return;
     }
 
-    sql = 'update homepage set pagejson = "' + data[1]  +'"  where id = ' + data[0];
+    sql = 'update homepage set pagejson=?  where id=?';
 
-    await context.app.sqlclient.query(sql);
+    await context.app.sqlclient.query(sql, [data[1], data[0]]);
 
     //context.app.log(context.session.useraccount, '修改', '密码重置');
 

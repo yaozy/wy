@@ -732,12 +732,12 @@ flyingon.widget({
 
             flyingon.http.get('homepage').then(function (result) {
 
-                result = JSON.parse(result);
+                if (result) {
 
-                if (result.length > 0) {
+                    result = JSON.parse(result);
 
-                    homepageid = result[0].id;
-                    memo.value = result[0].pagejson;
+                    homepageid = result.id;
+                    memo.value = result.pagejson;
                     //memo.height(598);
 
                     editor = CodeMirror.fromTextArea(memo, {
