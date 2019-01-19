@@ -794,7 +794,23 @@ flyingon.Control.extend('HomeMap', function () {
             series: [{
                 type: 'map',
                 mapType: file,
-                data: maps
+                data: maps,
+                //roam: 'scale',  //'move',  true
+                left: 20, top: 20, right: 20, bottom: 20,
+                label: {
+                    emphasis: {
+                        show: true
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        areaColor: '#00BFFF',
+                        borderColor: '#111'
+                    },
+                    emphasis: {
+                        areaColor: '#FFD700'
+                    }
+                }
             }]
         });
     }
@@ -913,7 +929,7 @@ flyingon.HomePlugin = flyingon.widget({
                     // },
                     {
                         Class: 'Label',
-                        text: '顺彩BI智能分析平台',
+                        text: '顺彩BI智能报表分析平台',
                         width: '100%',
                         height: 60,
                         margin: '12 0',

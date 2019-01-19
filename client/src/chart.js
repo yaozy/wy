@@ -412,7 +412,112 @@ flyingon.widget({
 
                 flyingon.importXlsx(event.dom.files[0], function (data) {
 
-                    debugger
+                    debugger;
+
+                    var arrDataRangs = [];
+
+                    var shName = data.SheetNames[0];
+                    var shObj = data.Sheets[shName];
+
+                    //  !ref = 'A1:J11'     ---  需要判断没有  '!ref' （即无数据的情况）
+                    if ('!ref' in shObj) {
+
+                        arrDataRangs.push(shObj['!ref'].match(/[A-Z]+|\d+/g));
+
+                        //['A','1','J','11']   即：只要有四个元素，说明有二维行列的数据区域范围可取值导入
+                        if (arrDataRangs[0].length != 4) {
+                            flyingon.toast('选择的导入文件可能为空，或数据错误！');
+                            return;
+                        }
+                    }
+                    else {
+                        flyingon.toast('选择的导入文件可能为空，或数据错误！');
+                        return;
+                    };
+
+                    var dataIn = [],
+                        arrPageColsTitle = [],
+                        arrPageColsName = [],
+                        gd = chartGrid;
+
+                    var colB = arrDataRangs[0][0],
+                        colE = arrDataRangs[0][2],
+                        rowB = arrDataRangs[0][1],
+                        rowNumB = +rowB,
+                        rowNumE = +arrDataRangs[0][3];
+
+                    var arrColsBE = [];
+
+                    var colTemp = '';
+
+                    var colNumB = colB.charCodeAt(0);
+                    var colNumE = colE.charCodeAt(0);
+
+
+                    //先取页面上表格列名与对应字段名；
+                    for (var k = 2; k < gd.columns().length; k++) {
+
+                        arrPageColsTitle.push(gd.columns(k).title());
+                        arrPageColsName.push(gd.columns(k).name());
+                    };
+
+                    //取文件中的数据列名，判断是否有不能对应数据表中字段的待导入列；
+                    var errFldName = '';
+                    for (var i = 0; i < colNumE - colNumB + 1; i++) {
+
+                        colTemp = String.fromCharCode(colNumB + i) + rowB;
+                        colTemp = shObj[colTemp].v;
+
+                        if (arrPageColsTitle.indexOf(colTemp) < 0) {
+                            errFldName = errFldName + colTemp + '，';
+                        }
+                        else {
+                            arrColsBE.push(colTemp);
+                        }
+                    };
+
+                    if (errFldName.length > 0) {
+                        //flyingon.toast('选择的导入文件中有字段"' + errFldName + '"不能对应到本页的表格列，请检查！');
+                        flyingon.showMessage('导入提示', '选择的导入文件中有字段"' + errFldName + '"不能对应到本页的表格列，请检查！', 'warn', 'ok');
+                        return;
+                    };
+
+                    if (arrColsBE.length != arrPageColsTitle.length){
+                        flyingon.showMessage('导入提示', '本页表格列中有部分字段没有对应到导入文件中的列，请检查！', 'warn', 'ok');
+                        //flyingon.toast('本页表格列中有部分列没有对应到待导入表格中列的，请检查！');
+                        return;
+                    };
+
+                    var valTemp = keyTemp = aTemp = '';
+                    var dataTemp = {};
+
+                    //取待导入的数据行（排除第一行：标题），插入数组对象；
+                    for (var j = 1; j <= rowNumE - rowNumB; j++) {
+
+                        valTemp = keyTemp = aTemp = '';
+                        dataTemp = {};
+
+                        //内循环，根据数据列取值
+                        for (var jj = 0; jj < arrColsBE.length; jj++) {
+
+                            keyTemp = arrPageColsName[jj];
+
+                            //当待导入的数据列少于当前页表格列时，要给空值；
+                            if (arrPageColsTitle[jj] == arrColsBE[jj]) {
+                                aTemp = String.fromCharCode(colNumB + jj) + (rowNumB + j);
+                                valTemp = shObj[aTemp].v;
+                            } else {
+                                valTemp = '';
+                            }
+
+                            dataTemp[keyTemp] = valTemp;
+                        };
+
+                        dataIn.push(dataTemp);
+
+                    };
+
+                    chartDataset.load(dataIn);
 
                 });
             });
@@ -428,13 +533,13 @@ flyingon.widget({
 
                     //flyingon.toast({ text: '正在导出数据，请稍候……', time: 60000, loading: true });
 
-                    var arrClumns = [],
+                    var arrCols = [],
                         arrRows = [];
 
                     //先取表格列名
-                    arrClumns.push('序号');
+                    arrCols.push('序号');
                     for (var k = 2; k < gd.columns().length; k++) {
-                        arrClumns.push(gd.columns(k).title());
+                        arrCols.push(gd.columns(k).title());
                     };
 
 
@@ -446,7 +551,7 @@ flyingon.widget({
                         //获取对象数据的值
                         arrRows = Object.values(ds[i].data);
                         for (var j = 0; j <= arrRows.length - 1; j++) {
-                            objRows[arrClumns[j]] = arrRows[j];
+                            objRows[arrCols[j]] = arrRows[j];
                         }
 
                         data[i] = objRows;
