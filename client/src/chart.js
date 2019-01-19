@@ -517,7 +517,7 @@ flyingon.widget({
 
                     };
 
-                    chartDataset.load(dataIn);
+                    chartDataset.push.apply(chartDataset, dataIn);
 
                 });
             });
