@@ -28,9 +28,9 @@ var host = flyingon.view({
                     {
                         Class: 'Label',
                         dock: 'left',
-                        width: 200,
+                        width: 250,
                         height: '100%',
-                        text: '顺彩BI智能分析系统',
+                        text: '顺彩BI智能报表分析平台',
                         fontSize: '20px'
                     },
                     {
