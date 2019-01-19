@@ -733,12 +733,30 @@ flyingon.Control.extend('HomeMap', function () {
 
         var self = this,
             stack = [];
+            
+        function raiseChange(self) {
+
+            var list = [],
+                index = 3,
+                item;
+
+            while (item = list[index++])
+            {
+                list.push(item);
+                index++;
+            }
+
+            self.trigger('map-change', 'path', list.join('/'));
+        }
 
         this.on('click', function () {
 
             if (stack[3]) {
                 stack.length -= 2;
+                self.points = [];
+                
                 load(self, null, stack[stack.length - 2], stack[stack.length - 1]);
+                raiseChange(self);
             }
         });
 
@@ -752,8 +770,11 @@ flyingon.Control.extend('HomeMap', function () {
 
                 var file;
 
+                self.points = [];
+
                 if (params.data && (file = params.data.file)) {
                     load(self, stack, file, params.name);
+                    raiseChange(self);
                 }
 
                 params.event.event.stopPropagation();
@@ -765,34 +786,36 @@ flyingon.Control.extend('HomeMap', function () {
 
     function load(self, stack, file, text) {
 
-        var data;
+        self.file = file;
+        self.text = text;
 
         if (stack) {
             stack.push(file, text);
         }
 
-        if (data = cache[file]) {
-            show(self, file, text, data);
+        if (cache[file]) {
+            show(self);
             return;
         }
 
         flyingon.http.get(file).then(function (data) {
 
-            show(self, file, text, cache[file] = JSON.parse(data));
+            echarts.registerMap(file, data);
+            cache[file] = true;
+
+            show(self);
         });
     }
 
 
-    function show(self, file, text, data) {
-
-        echarts.registerMap(file, data);
+    function show(self) {
 
         self.chart.setOption({
             title: {
-                text: text
+                text: self.text
             },
             geo: {
-                map: file,
+                map: self.file,
                 left: 20, top: 20, right: 20, bottom: 20
             },
             series: [{
@@ -801,7 +824,7 @@ flyingon.Control.extend('HomeMap', function () {
                 symbolSize: 20,
                 symbol: 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z',
                 symbolRotate: 35,
-                data: [{ "name": "海门", "value": [121.15, 31.89, 9] }, { "name": "鄂尔多斯", "value": [109.781327, 39.608266, 12] }, { "name": "招远", "value": [120.38, 37.35, 12] }, { "name": "舟山", "value": [122.207216, 29.985295, 12] }, { "name": "齐齐哈尔", "value": [123.97, 47.33, 14] }, { "name": "盐城", "value": [120.13, 33.38, 15] }, { "name": "赤峰", "value": [118.87, 42.28, 16] }, { "name": "青岛", "value": [120.33, 36.07, 18] }, { "name": "乳山", "value": [121.52, 36.89, 18] }, { "name": "金昌", "value": [102.188043, 38.520089, 19] }, { "name": "泉州", "value": [118.58, 24.93, 21] }, { "name": "南通", "value": [121.05, 32.08, 23] }, { "name": "拉萨", "value": [91.11, 29.97, 24] }, { "name": "云浮", "value": [112.02, 22.93, 24] }, { "name": "上海", "value": [121.48, 31.22, 25] }, { "name": "攀枝花", "value": [101.718637, 26.582347, 25] }, { "name": "承德", "value": [117.93, 40.97, 25] }, { "name": "汕尾", "value": [115.375279, 22.786211, 26] }, { "name": "丹东", "value": [124.37, 40.13, 27] }, { "name": "瓦房店", "value": [121.979603, 39.627114, 30] }, { "name": "延安", "value": [109.47, 36.6, 38] }, { "name": "咸阳", "value": [108.72, 34.36, 43] }, { "name": "南昌", "value": [115.89, 28.68, 54] }, { "name": "柳州", "value": [109.4, 24.33, 54] }, { "name": "三亚", "value": [109.511909, 18.252847, 54] }, { "name": "泸州", "value": [105.39, 28.91, 57] }, { "name": "克拉玛依", "value": [84.77, 45.59, 72] }],
+                data: self.points || [],
                 label: {
                     normal: {
                         formatter: '{b}',
@@ -817,32 +840,46 @@ flyingon.Control.extend('HomeMap', function () {
                         color: '#F06C00'
                     }
                 }
-            },
-                {
-                    type: 'map',
-                    mapType: file,
-                    data: maps,
-                    //roam: 'scale',  //'move',  true
-                    left: 20, top: 20, right: 20, bottom: 20,
-                    label: {
-                        emphasis: {
-                            show: true
-                        }
+            }, {
+                type: 'map',
+                mapType: self.file,
+                data: maps,
+                //roam: 'scale',  //'move',  true
+                left: 20, top: 20, right: 20, bottom: 20,
+                label: {
+                    emphasis: {
+                        show: true
+                    }
+                },
+                itemStyle: {
+                    normal: {
+                        areaColor: '#00BFFF',
+                        borderColor: '#111'
                     },
-                    itemStyle: {
-                        normal: {
-                            areaColor: '#00BFFF',
-                            borderColor: '#111'
-                        },
-                        emphasis: {
-                            areaColor: '#FFD700'
-                        }
+                    emphasis: {
+                        areaColor: '#FFD700'
                     }
                 }
-            ]
+            }]
         });
     }
 
+
+
+    this.setData = function (dataset) {
+
+        var table = dataset.points;
+
+        if (table && table.length > 0)
+        {
+            this.points = table;
+
+            if (this.chart)
+            {
+                show(this);
+            }
+        }
+    }
 
 
     this.refreshChart = function () {
@@ -1039,21 +1076,21 @@ flyingon.HomePlugin = flyingon.widget({
         }
 
 
-        function refresh() {
+        function refresh(path) {
 
             if (timeout) {
                 clearTimeout(timeout);
                 timeout = 0;
             }
 
-            flyingon.toast({
+            host.length || flyingon.toast({
 
                 text: '正在加载数据，请稍候......',
                 time: 30000,
                 loading: true
             });
 
-            flyingon.http.get('chart-home/main').json(update);
+            flyingon.http.get('chart-home/0/' + encodeURIComponent(path)).json(update);
         }
 
 
@@ -1063,7 +1100,10 @@ flyingon.HomePlugin = flyingon.widget({
 
             flyingon.toast.hide();
 
-            host.push.apply(host, data[0]);
+            if (!host.length)
+            {
+                host.push.apply(host, data[0]);
+            }
 
             findControls(host, 'setData', controls);
 
@@ -1107,7 +1147,13 @@ flyingon.HomePlugin = flyingon.widget({
         }
 
 
-        refresh();
+        refresh('%');
+
+
+        this.on('map-change', function (event) {
+         
+            refresh(event.path || '%');
+        });
 
     }
 
