@@ -45,7 +45,7 @@ async function loadData(id, path) {
         }
     }
 
-    path = "'" + path + "'";
+    path = "'" + (path !== '%' ? path + '%' : path) + "'";
 
     for (let name in dataset)
     {
@@ -94,10 +94,8 @@ module.exports = async (context, next) => {
 
 module.exports.clearCache = function () {
 
-    for (let name in charts)
-    {
-        delete charts[name];
-    }
+    charts = Object.create(null);
+    cache = Object.create(null);
 }
 
 

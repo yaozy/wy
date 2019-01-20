@@ -740,7 +740,7 @@ flyingon.Control.extend('HomeMap', function () {
                 index = 3,
                 item;
 
-            while (item = list[index++])
+            while (item = stack[index++])
             {
                 list.push(item);
                 index++;
@@ -1369,6 +1369,18 @@ flyingon.Control.extend(function (Class, base) {
     }
 
 
+    function fieldMaps(data, category, value) {
+
+        var array = [];
+
+        for (var i = data.length; i--;) {
+            array[i] = { name: data[i][category], value: data[i][value] };
+        }
+
+        return array;
+    }
+
+
     this.show = function (option, data, valueFields, sort, desc) {
 
         var any;
@@ -1385,17 +1397,27 @@ flyingon.Control.extend(function (Class, base) {
         if (any = option.series) {
             var array = any;
 
-            if (!(array instanceof Array)) {
+            if (!(array instanceof Array))
+            {
                 array = option.series = [];
 
-                for (var i = valueFields.length; i--;) {
+                for (var i = valueFields.length; i--;)
+                {
                     array[i] = Object.assign({}, any);
                     array[i].name = valueFields[i];
                 }
             }
 
-            for (var i = array.length; i--;) {
-                array[i].data = fieldValues(data, array[i].name);
+            for (var i = array.length; i--;)
+            {
+                if (array[i].type === 'pie')
+                {
+                    any[i].data = fieldMaps(data, '__by', array[i].name);
+                }
+                else
+                {
+                    array[i].data = fieldValues(data, array[i].name);
+                }
             }
         }
 
