@@ -94,8 +94,15 @@ module.exports = async (context, next) => {
 
 module.exports.clearCache = function () {
 
-    charts = Object.create(null);
-    cache = Object.create(null);
+    for (let name in charts)
+    {
+        delete charts[name];
+    }
+
+    for (let name in cache)
+    {
+        delete cache[name];
+    }
 }
 
 
