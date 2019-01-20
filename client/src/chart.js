@@ -46,8 +46,8 @@ flyingon.widget({
                             // { Class: 'Button', key: 'out', width: 85, text: '数据导出', icon: 'icon-out' },
                             { Class: 'Button', key: 'datafix', width: 85, text: '数据维护', icon: 'icon-datafix' },
                             { Class: 'Button', key: 'refresh', width: 85, text: '刷新', icon: 'icon-refresh' },
-                            { Class: 'Lable', width: 20 },
-                            { Class: 'Button', key: 'homeset', width: 85, text: '首页配置', icon: 'icon-refresh' },
+                            //{ Class: 'Lable', width: 20 },
+                            { Class: 'Button', key: 'homeset', width: 85, text: '首页配置', icon: 'icon-homeset' },
                             { Class: 'Button', key: 'search', text: '查询', width: 65, dock: 'right', icon: 'icon-search' },
                             { Class: 'TextBox', id: 'txtSearch', width: 200, placeholder: '请输入图表名称', dock: 'right' }
                         ]
@@ -412,7 +412,7 @@ flyingon.widget({
 
                 flyingon.importXlsx(event.dom.files[0], function (data) {
 
-                    debugger;
+                    //debugger;
 
                     var arrDataRangs = [];
 
