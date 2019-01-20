@@ -1147,12 +1147,12 @@ flyingon.HomePlugin = flyingon.widget({
         }
 
 
-        refresh('%');
+        refresh('');
 
 
         this.on('map-change', function (event) {
          
-            refresh(event.path || '%');
+            refresh(event.path || '');
         });
 
     }

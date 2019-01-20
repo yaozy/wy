@@ -33,7 +33,9 @@ async function loadData(id, path) {
     let dataset = config.dataset;
     let tables = {};
 
-    let points = tables.points = await app.sqlclient.query('select orgname, longitude, latitude from orginfo where citypath like ?', [path || '%']);
+    path += '%';
+
+    let points = tables.points = await app.sqlclient.query('select orgname, longitude, latitude from orginfo where citypath like ?', [path]);
     
     for (let i = points.length; i--;)
     {
@@ -45,7 +47,7 @@ async function loadData(id, path) {
         }
     }
 
-    path = "'" + (path !== '%' ? path + '%' : path) + "'";
+    path = "'" + path + "'";
 
     for (let name in dataset)
     {
@@ -60,7 +62,7 @@ async function loadData(id, path) {
 module.exports = async (context, next) => {
 
     let id = context.paths[0] | 0;
-    let path = decodeURIComponent(context.paths[1]);
+    let path = decodeURIComponent(context.paths[1] || '');
 
     let data = cache[id];
 
