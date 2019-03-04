@@ -1179,7 +1179,6 @@ flyingon.Control.extend(function (Class, base) {
             }
         }
         else {
-            this.valueFields = valueFields;
             this.computed = null;
         }
     }
