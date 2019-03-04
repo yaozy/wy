@@ -733,15 +733,14 @@ flyingon.Control.extend('HomeMap', function () {
 
         var self = this,
             stack = [];
-            
+
         function raiseChange(self) {
 
             var list = [],
                 index = 3,
                 item;
 
-            while (item = stack[index++])
-            {
+            while (item = stack[index++]) {
                 list.push(item);
                 index++;
             }
@@ -754,7 +753,7 @@ flyingon.Control.extend('HomeMap', function () {
             if (stack[3]) {
                 stack.length -= 2;
                 self.points = [];
-                
+
                 load(self, null, stack[stack.length - 2], stack[stack.length - 1]);
                 raiseChange(self);
             }
@@ -821,14 +820,24 @@ flyingon.Control.extend('HomeMap', function () {
             series: [{
                 type: 'scatter',
                 coordinateSystem: 'geo',
-                symbolSize: 20,
-                symbol: 'path://M1705.06,1318.313v-89.254l-319.9-221.799l0.073-208.063c0.521-84.662-26.629-121.796-63.961-121.491c-37.332-0.305-64.482,36.829-63.961,121.491l0.073,208.063l-319.9,221.799v89.254l330.343-157.288l12.238,241.308l-134.449,92.931l0.531,42.034l175.125-42.917l175.125,42.917l0.531-42.034l-134.449-92.931l12.238-241.308L1705.06,1318.313z',
-                symbolRotate: 35,
                 data: self.points || [],
+                symbol: 'pin',
+                symbolSize: 15,
+
                 label: {
                     normal: {
-                        formatter: '{b}',
+                        offset: [20, -20],
+                        //formatter: '{b}',
+                        formatter:
+                            function (o) {
+
+                                return o.data.name + ' \n\n应收：' + o.data.datas[0] + ' 万元\n已收：' + o.data.datas[1] + ' 万元\n欠收：' + o.data.datas[2] + ' 万元\n\n收缴率：' + o.data.datas[3] + '%';
+                            },
+
                         position: 'right',
+                        color: '#FFFFFF',
+                        fontSize: 14,
+                        fontFamily: 'iconfont',
                         show: false
                     },
                     emphasis: {
@@ -847,14 +856,14 @@ flyingon.Control.extend('HomeMap', function () {
                 //roam: 'scale',  //'move',  true
                 left: 20, top: 20, right: 20, bottom: 20,
                 label: {
-                    emphasis: {
+                    normal: {
                         show: true
                     }
                 },
                 itemStyle: {
                     normal: {
                         areaColor: '#00BFFF',
-                        borderColor: '#111'
+                        borderColor: '#111111'
                     },
                     emphasis: {
                         areaColor: '#FFD700'
@@ -870,12 +879,10 @@ flyingon.Control.extend('HomeMap', function () {
 
         var table = dataset.points;
 
-        if (table && table.length > 0)
-        {
+        if (table && table.length > 0) {
             this.points = table;
 
-            if (this.chart)
-            {
+            if (this.chart) {
                 show(this);
             }
         }
@@ -1100,8 +1107,7 @@ flyingon.HomePlugin = flyingon.widget({
 
             flyingon.toast.hide();
 
-            if (!host.length)
-            {
+            if (!host.length) {
                 host.push.apply(host, data[0]);
             }
 
@@ -1151,7 +1157,7 @@ flyingon.HomePlugin = flyingon.widget({
 
 
         this.on('map-change', function (event) {
-         
+
             refresh(event.path || '');
         });
 
@@ -1396,25 +1402,20 @@ flyingon.Control.extend(function (Class, base) {
         if (any = option.series) {
             var array = any;
 
-            if (!(array instanceof Array))
-            {
+            if (!(array instanceof Array)) {
                 array = option.series = [];
 
-                for (var i = valueFields.length; i--;)
-                {
+                for (var i = valueFields.length; i--;) {
                     array[i] = Object.assign({}, any);
                     array[i].name = valueFields[i];
                 }
             }
 
-            for (var i = array.length; i--;)
-            {
-                if (array[i].type === 'pie')
-                {
+            for (var i = array.length; i--;) {
+                if (array[i].type === 'pie') {
                     any[i].data = fieldMaps(data, '__by', array[i].name);
                 }
-                else
-                {
+                else {
                     array[i].data = fieldValues(data, array[i].name);
                 }
             }
