@@ -170,15 +170,7 @@ var host = flyingon.view({
             // 根据url查找树节点
             var node = url && menu.findNode(function (node) {
 
-                var any = node.get('url');
-
-                if (any === url) {
-                    return node;
-                }
-
-                if (any && url.indexOf(any) === 0) {
-                    // 节点url与原始url不同则同步(多级路由时可能会不同)
-                    node.set('url', url);
+                if (node.get('url') === url) {
                     return node;
                 }
             });
