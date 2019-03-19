@@ -1,4 +1,4 @@
-module.exports = {
+﻿module.exports = {
 
     // 是否开发模式
     dev: true,
@@ -11,7 +11,7 @@ module.exports = {
     // session配置
     session: {
         // session过期时间(分钟)
-        timeout: 20
+        timeout: 20000
     },
 
     // 数据库配置
